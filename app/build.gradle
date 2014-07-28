@@ -1,11 +1,15 @@
 apply plugin: 'com.android.application'
 
+dependencies {
+    compile project(':library')
+}
+
 android {
     compileSdkVersion 20
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-        applicationId "com.malmstein.fenster"
+        applicationId "com.malmstein.fenster.demo"
         minSdkVersion 15
         targetSdkVersion 19
         versionCode 1
