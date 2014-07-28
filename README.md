@@ -29,7 +29,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.novoda:malmstein:0.1-SNAPSHOT'
+        classpath 'com.malmstein:fenster:0.1-SNAPSHOT'
     }
 }
 ```
