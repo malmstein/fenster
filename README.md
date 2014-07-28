@@ -1,7 +1,7 @@
 Fenster
 =============================
 
-Yet another video view
+Yet another video library
 
 
 Install
