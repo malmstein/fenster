@@ -1,15 +1,22 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="#0099cc"
+  tools:context=".DemoActivity">
+
+  <com.malmstein.fenster.TextureVideoView
+    android:id="@+id/play_video_texture"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0099cc"
-    tools:context=".DemoActivity">
+    android:keepScreenOn="true"
+    android:gravity="center" />
 
-    <com.malmstein.fenster.TextureVideoView
-      android:id="@+id/fullscreen_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:keepScreenOn="true"
-        android:gravity="center"/>
+  <com.malmstein.fenster.PlayerController
+    android:id="@+id/play_video_controller"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:fitsSystemWindows="true" />
 
 </FrameLayout>

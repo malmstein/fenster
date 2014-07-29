@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <style name="MediaButton">
+    <item name="android:background">@null</item>
+    <item name="android:layout_width">@dimen/media_controller_button_width</item>
+    <item name="android:layout_height">@dimen/media_controller_button_height</item>
+  </style>
+
+  <style name="MediaButton.Previous">
+    <item name="android:src">@android:drawable/ic_media_rew</item>
+  </style>
+
+  <style name="MediaButton.Play">
+    <item name="android:src">@android:drawable/ic_media_play</item>
+  </style>
+
+  <style name="MediaButton.Next">
+    <item name="android:src">@android:drawable/ic_media_next</item>
+  </style>
+
+  <style name="MediaText">
+    <item name="android:textSize">@dimen/media_controller_text_size</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:paddingTop">@dimen/padding_medium</item>
+    <item name="android:textColor">@android:color/white</item>
+    <item name="android:gravity">center_horizontal</item>
+  </style>
+
+</resources>

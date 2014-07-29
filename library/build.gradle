@@ -1,3 +1,12 @@
+def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+def buildTime = new Date().format("yyyy-MM-dd'T'HH:mm'Z'", TimeZone.getTimeZone('UTC'))
+
+// Manifest version information!
+int versionMajor = 0
+int versionMinor = 0
+int versionPatch = 1
+int versionBuild = 1 // bump for dogfood builds, public betas, etc.
+
 apply plugin: 'com.android.library'
 
 android {
@@ -8,8 +17,8 @@ android {
         applicationId "com.malmstein.fenster"
         minSdkVersion 15
         targetSdkVersion 19
-        versionCode 1
-        versionName "1.0"
+        versionCode versionMajor * 100**3 + versionMinor * 100**2 + versionPatch * 100 + versionBuild
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
     }
     buildTypes {
         release {

@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.Surface;
+import android.view.TextureView;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -42,7 +43,7 @@ import java.util.concurrent.TimeUnit;
  * change from its previously returned value when the VideoView is restored.
  */
 
-public class TextureVideoView extends android.view.TextureView implements MediaController.MediaPlayerControl {
+public class TextureVideoView extends TextureView implements MediaController.MediaPlayerControl, Player {
 
     public static final String TAG = "TextureVideoView";
     public static final int VIDEO_BEGINNING = 0;
@@ -62,7 +63,7 @@ public class TextureVideoView extends android.view.TextureView implements MediaC
     // We should keep this close to android.widget.MediaController,
     // so that porting a controller to android's VideoView remains manageable.
     public interface VideoController {
-        void setMediaPlayer(MediaController.MediaPlayerControl player);
+        void setMediaPlayer(Player player);
 
         void setEnabled(boolean value);
 
@@ -74,15 +75,6 @@ public class TextureVideoView extends android.view.TextureView implements MediaC
 
         void hide();
 
-        // Should not be here!
-        // this should be handled internally, not triggered from outside the controller.
-        // it is specific to the concert play.
-        void hidePreviousPieceButton();
-
-        // Should not be here!
-        // this should be handled internally, not triggered from outside the controller.
-        // it is specific to the concert play.
-        void hideNextPieceButton();
     }
 
     private static final ReplayListener NULL_REPLAY_LISTENER = new ReplayListener() {
@@ -121,7 +113,7 @@ public class TextureVideoView extends android.view.TextureView implements MediaC
     private SurfaceTexture mSurfaceTexture;
     private MediaPlayer mMediaPlayer = null;
     private int mAudioSession;
-    private MediaController mConcertPlayerController;
+    private PlayerController mConcertPlayerController;
     private OnCompletionListener mOnCompletionListener;
     private MediaPlayer.OnPreparedListener mOnPreparedListener;
     private int mCurrentBufferPercentage;
@@ -198,7 +190,11 @@ public class TextureVideoView extends android.view.TextureView implements MediaC
         setVideo(Uri.parse(path), VIDEO_BEGINNING);
     }
 
-    private void setVideo(final Uri uri, final int seekInSeconds) {
+    public void setVideo(final String url, final int seekInSeconds) {
+        setVideoURI(Uri.parse(url), null, seekInSeconds);
+    }
+
+    public void setVideo(final Uri uri, final int seekInSeconds) {
         setVideoURI(uri, null, seekInSeconds);
     }
 
@@ -285,7 +281,7 @@ public class TextureVideoView extends android.view.TextureView implements MediaC
         mErrorListener.onError(mMediaPlayer, MediaPlayer.MEDIA_ERROR_UNKNOWN, 0);
     }
 
-    public void setMediaController(final MediaController controller) {
+    public void setMediaController(final PlayerController controller) {
         hideMediaController();
         mConcertPlayerController = controller;
         attachMediaController();
