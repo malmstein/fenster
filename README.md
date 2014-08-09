@@ -4,19 +4,8 @@ Fenster
 A library to display videos in a TextureView using a custom media player controller
 
 
-Install (Available soon MavenCentral)
+Install (Available soon)
 =============================
-
-```groovy
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.malmstein:fenster:0.1'
-    }
-}
-```
 
 To get the current snapshot version:
 
@@ -66,7 +55,7 @@ Displaying a video
 
 ### Setting video URL
 
-In order to display a video, simply set the video URL and call start. You can start from a desired second too.
+In order to display a video, simply set the video URL and call start. **You can also start the video from a desired second too**.
 
 
 ```java
