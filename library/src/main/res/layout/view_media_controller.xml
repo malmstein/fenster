@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.novoda.fenster.video.VideoTouchRoot xmlns:android="http://schemas.android.com/apk/res/android"
+<com.malmstein.fenster.VideoTouchRoot xmlns:android="http://schemas.android.com/apk/res/android"
   android:id="@+id/media_controller_touch_root"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/media_controller_bg">
+  android:background="@color/default_bg">
 
   <RelativeLayout
     android:layout_width="match_parent"
@@ -76,4 +76,4 @@
 
   </RelativeLayout>
 
-</com.novoda.fenster.video.VideoTouchRoot>
+</com.malmstein.fenster.VideoTouchRoot>

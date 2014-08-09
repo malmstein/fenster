@@ -126,34 +126,34 @@ public final class PlayerController extends FrameLayout implements VideoTouchRoo
     }
 
     private void initControllerView(final View v) {
-        mPauseButton = (ImageButton) findViewById(R.id.media_controller_pause);
+        mPauseButton = (ImageButton) v.findViewById(R.id.media_controller_pause);
         mPauseButton.requestFocus();
         mPauseButton.setOnClickListener(mPauseListener);
 
-        mNextButton = (ImageButton) findViewById(R.id.media_controller_next);
+        mNextButton = (ImageButton) v.findViewById(R.id.media_controller_next);
         mNextButton.setOnClickListener(nextTrackListener);
 
-        mPrevButton =(ImageButton) findViewById(R.id.media_controller_previous);
+        mPrevButton =(ImageButton) v.findViewById(R.id.media_controller_previous);
         mPrevButton.setOnClickListener(previousTrackListener);
 
-        mProgress = (SeekBar) findViewById(R.id.media_controller_progress);
+        mProgress = (SeekBar) v.findViewById(R.id.media_controller_progress);
         SeekBar seeker = (SeekBar) mProgress;
         seeker.setOnSeekBarChangeListener(mSeekListener);
         mProgress.setMax(1000);
 
-        mEndTime = (TextView) findViewById(R.id.media_controller_time);
-        mCurrentTime = (TextView) findViewById(R.id.media_controller_time_current);
+        mEndTime = (TextView) v.findViewById(R.id.media_controller_time);
+        mCurrentTime = (TextView) v.findViewById(R.id.media_controller_time_current);
         mFormatBuilder = new StringBuilder();
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
 
 
-        VideoTouchRoot touchRoot = (VideoTouchRoot) findViewById(R.id.media_controller_touch_root);
+        VideoTouchRoot touchRoot = (VideoTouchRoot) v.findViewById(R.id.media_controller_touch_root);
         touchRoot.setOnTouchReceiver(this);
 
-        bottomControlsRoot = findViewById(R.id.media_controller_bottom_area);
+        bottomControlsRoot = v.findViewById(R.id.media_controller_bottom_area);
         bottomControlsRoot.setVisibility(View.INVISIBLE);
 
-        controlsRoot = findViewById(R.id.media_controller_controls_root);
+        controlsRoot = v.findViewById(R.id.media_controller_controls_root);
         controlsRoot.setVisibility(View.INVISIBLE);
         controlsRoot.setOnTouchListener(new OnTouchListener() {
             @Override
@@ -166,7 +166,7 @@ public final class PlayerController extends FrameLayout implements VideoTouchRoo
             }
         });
 
-        loadingView = (ProgressBar) findViewById(R.id.media_controller_loading_view);
+        loadingView = (ProgressBar) v.findViewById(R.id.media_controller_loading_view);
     }
 
     /**
