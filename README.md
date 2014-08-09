@@ -1,7 +1,7 @@
 Fenster
 =============================
 
-A library to display videos in a TextureView using a custom media player controller
+A library to display videos in a `TextureView` using a custom `MediaPlayer` controller
 
 
 Install (Available soon)
