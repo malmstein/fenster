@@ -14,6 +14,7 @@ import android.widget.*;
 import com.malmstein.fenster.R;
 import com.malmstein.fenster.TextureVideoView;
 import com.malmstein.fenster.VideoTouchRoot;
+import com.malmstein.fenster.gestures.FensterEventsListener;
 
 import java.util.Formatter;
 import java.util.Locale;
@@ -28,7 +29,7 @@ import java.util.Locale;
  * (which is a bit odd and should be subject to change.)
  *
  */
-public final class PlayerController extends FrameLayout implements VideoTouchRoot.OnTouchReceiver, TextureVideoView.VideoController, TextureVideoView.OnPlayStateListener {
+public final class PlayerController extends FrameLayout implements TextureVideoView.VideoController, TextureVideoView.OnPlayStateListener, FensterEventsListener {
 
     /**
      * Called to notify that the control have been made visible or hidden.
@@ -152,7 +153,7 @@ public final class PlayerController extends FrameLayout implements VideoTouchRoo
 
 
         VideoTouchRoot touchRoot = (VideoTouchRoot) v.findViewById(R.id.media_controller_touch_root);
-        touchRoot.setOnTouchReceiver(this);
+        touchRoot.setFensterEventsListener(this);
 
         bottomControlsRoot = v.findViewById(R.id.media_controller_bottom_area);
         bottomControlsRoot.setVisibility(View.INVISIBLE);
@@ -178,10 +179,11 @@ public final class PlayerController extends FrameLayout implements VideoTouchRoo
      * so we can avoid hiding the ui while the user is interacting.
      */
     @Override
-    public void onControllerUiTouched() {
+    public void onSingleTap() {
         if (mShowing) {
-            Log.d(TAG, "controller ui touch received!");
             show();
+        } else {
+            hide();
         }
     }
 

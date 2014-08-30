@@ -3,8 +3,12 @@ package com.malmstein.fenster;
 import android.content.Context;
 import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
+
+import com.malmstein.fenster.gestures.FensterEventsListener;
+import com.malmstein.fenster.gestures.FensterGestureListener;
 
 /**
  * A custom layout we put as a layout root to get notified about any screen touches.
@@ -13,11 +17,11 @@ public final class VideoTouchRoot extends FrameLayout {
 
     public static final int MIN_INTERCEPTION_TIME = 1000;
 
-    public interface OnTouchReceiver {
-        void onControllerUiTouched();
-    }
+    private FensterEventsListener touchController;
 
-    private OnTouchReceiver touchReceiver;
+    private GestureDetector gestureDetector;
+    private FensterGestureListener gestureListener;
+
     private long lastInterception = 0;
 
     public VideoTouchRoot(final Context context) {
@@ -33,19 +37,47 @@ public final class VideoTouchRoot extends FrameLayout {
     }
 
     @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+
+        final int action = ev.getActionMasked();
+
+        switch (action) {
+            case (MotionEvent.ACTION_DOWN):
+                return false;
+            case (MotionEvent.ACTION_MOVE):
+                return true;
+            case (MotionEvent.ACTION_UP):
+                return false;
+            case (MotionEvent.ACTION_CANCEL):
+                return false;
+            case (MotionEvent.ACTION_OUTSIDE):
+                return false;
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return super.onTouchEvent(event);
+    }
+
+    @Override
     public boolean dispatchTouchEvent(final MotionEvent ev) {
-        if (touchReceiver != null) {
+        if (touchController != null) {
             final long timeStamp = SystemClock.elapsedRealtime();
             // we throttle the touch event dispatch to avoid event spam
             if (timeStamp - lastInterception > MIN_INTERCEPTION_TIME) {
                 lastInterception = timeStamp;
-                touchReceiver.onControllerUiTouched();
+                touchController.onSingleTap();
             }
         }
         return super.dispatchTouchEvent(ev);
     }
 
-    public void setOnTouchReceiver(final OnTouchReceiver receiver) {
-        this.touchReceiver = receiver;
+    public void setFensterEventsListener(final FensterEventsListener receiver) {
+        gestureListener = new FensterGestureListener();
+        gestureDetector = new GestureDetector(getContext(), gestureListener);
+        this.touchController = receiver;
     }
 }
