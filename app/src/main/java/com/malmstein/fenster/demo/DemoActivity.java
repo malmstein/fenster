@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import com.malmstein.fenster.PlayerController;
+import com.malmstein.fenster.controller.PlayerController;
 import com.malmstein.fenster.TextureVideoView;
 
 public class DemoActivity extends Activity implements PlayerController.NavigationListener, PlayerController.VisibilityListener {

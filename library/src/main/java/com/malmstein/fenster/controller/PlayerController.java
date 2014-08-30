@@ -1,4 +1,4 @@
-package com.malmstein.fenster;
+package com.malmstein.fenster.controller;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,6 +11,9 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.*;
 
+import com.malmstein.fenster.R;
+import com.malmstein.fenster.TextureVideoView;
+import com.malmstein.fenster.VideoTouchRoot;
 
 import java.util.Formatter;
 import java.util.Locale;
@@ -23,6 +26,7 @@ import java.util.Locale;
  * <p/>
  * It's actually a view currently, as is the android MediaController.
  * (which is a bit odd and should be subject to change.)
+ *
  */
 public final class PlayerController extends FrameLayout implements VideoTouchRoot.OnTouchReceiver, TextureVideoView.VideoController, TextureVideoView.OnPlayStateListener {
 

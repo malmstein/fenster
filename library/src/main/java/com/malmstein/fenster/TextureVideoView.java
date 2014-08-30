@@ -23,6 +23,9 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.MediaController;
 
+import com.malmstein.fenster.controller.Player;
+import com.malmstein.fenster.controller.PlayerController;
+
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;

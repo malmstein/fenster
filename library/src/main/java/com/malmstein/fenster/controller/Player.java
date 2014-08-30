@@ -1,4 +1,4 @@
-package com.malmstein.fenster;
+package com.malmstein.fenster.controller;
 
 public interface Player {
     void start();
