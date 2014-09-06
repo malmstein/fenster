@@ -15,10 +15,6 @@ import com.malmstein.fenster.gestures.FensterGestureListener;
  */
 public final class VideoTouchRoot extends FrameLayout {
 
-    public static final int MIN_INTERCEPTION_TIME = 1000;
-
-    private FensterEventsListener fensterEventsListener;
-
     private GestureDetector gestureDetector;
     private FensterGestureListener gestureListener;
 
@@ -61,8 +57,7 @@ public final class VideoTouchRoot extends FrameLayout {
         return super.onTouchEvent(event);
     }
 
-    public void setFensterEventsListener(final FensterEventsListener receiver) {
-        this.fensterEventsListener = receiver;
+    public void setFensterEventsListener(final FensterEventsListener fensterEventsListener) {
         gestureListener = new FensterGestureListener(fensterEventsListener, ViewConfiguration.get(getContext()));
         gestureDetector = new GestureDetector(getContext(), gestureListener);
     }
