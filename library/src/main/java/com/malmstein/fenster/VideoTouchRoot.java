@@ -1,10 +1,10 @@
 package com.malmstein.fenster;
 
 import android.content.Context;
-import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 
 import com.malmstein.fenster.gestures.FensterEventsListener;
@@ -17,12 +17,10 @@ public final class VideoTouchRoot extends FrameLayout {
 
     public static final int MIN_INTERCEPTION_TIME = 1000;
 
-    private FensterEventsListener touchController;
+    private FensterEventsListener fensterEventsListener;
 
     private GestureDetector gestureDetector;
     private FensterGestureListener gestureListener;
-
-    private long lastInterception = 0;
 
     public VideoTouchRoot(final Context context) {
         super(context);
@@ -59,25 +57,13 @@ public final class VideoTouchRoot extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        gestureDetector.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
 
-    @Override
-    public boolean dispatchTouchEvent(final MotionEvent ev) {
-        if (touchController != null) {
-            final long timeStamp = SystemClock.elapsedRealtime();
-            // we throttle the touch event dispatch to avoid event spam
-            if (timeStamp - lastInterception > MIN_INTERCEPTION_TIME) {
-                lastInterception = timeStamp;
-                touchController.onSingleTap();
-            }
-        }
-        return super.dispatchTouchEvent(ev);
-    }
-
     public void setFensterEventsListener(final FensterEventsListener receiver) {
-        gestureListener = new FensterGestureListener();
+        this.fensterEventsListener = receiver;
+        gestureListener = new FensterGestureListener(fensterEventsListener, ViewConfiguration.get(getContext()));
         gestureDetector = new GestureDetector(getContext(), gestureListener);
-        this.touchController = receiver;
     }
 }
