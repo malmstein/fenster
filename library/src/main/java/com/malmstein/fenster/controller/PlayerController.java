@@ -160,16 +160,6 @@ public final class PlayerController extends FrameLayout implements TextureVideoV
 
         controlsRoot = v.findViewById(R.id.media_controller_controls_root);
         controlsRoot.setVisibility(View.INVISIBLE);
-        controlsRoot.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (mShowing) {
-                    hide();
-                    return true;
-                }
-                return false;
-            }
-        });
 
         loadingView = (ProgressBar) v.findViewById(R.id.media_controller_loading_view);
     }
