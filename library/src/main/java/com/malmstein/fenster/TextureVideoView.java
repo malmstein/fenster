@@ -589,14 +589,6 @@ public class TextureVideoView extends TextureView implements MediaController.Med
     }
 
     @Override
-    public boolean onTouchEvent(final MotionEvent ev) {
-        if (isInPlaybackState() && mConcertPlayerController != null) {
-            mConcertPlayerController.show();
-        }
-        return false;
-    }
-
-    @Override
     public boolean onTrackballEvent(final MotionEvent ev) {
         if (isInPlaybackState() && mConcertPlayerController != null) {
             mConcertPlayerController.show();
