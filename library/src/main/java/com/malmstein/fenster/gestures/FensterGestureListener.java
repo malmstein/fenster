@@ -9,17 +9,18 @@ public class FensterGestureListener implements GestureDetector.OnGestureListener
 
     private static final String DEBUG_TAG = "FensterGestureListener";
 
-    private final FensterEventsListener touchController;
+    private final FensterEventsListener fensterEventsListener;
     private final ViewConfiguration viewConfiguration;
 
     public FensterGestureListener(FensterEventsListener touchController, ViewConfiguration viewConfiguration) {
-        this.touchController = touchController;
+        this.fensterEventsListener = touchController;
         this.viewConfiguration = viewConfiguration;
     }
 
     @Override
     public boolean onDown(MotionEvent e) {
         Log.d(DEBUG_TAG, "onDown: " + e.toString());
+        fensterEventsListener.onTap();
         return true;
     }
 

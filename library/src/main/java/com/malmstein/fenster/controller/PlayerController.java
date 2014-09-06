@@ -169,11 +169,11 @@ public final class PlayerController extends FrameLayout implements TextureVideoV
      * so we can avoid hiding the ui while the user is interacting.
      */
     @Override
-    public void onSingleTap() {
+    public void onTap() {
         if (mShowing) {
-            show();
-        } else {
             hide();
+        } else {
+            show();
         }
     }
 
