@@ -77,7 +77,7 @@ public final class SimpleMediaFensterPlayerController extends FrameLayout implem
 
     @Override
     protected void onFinishInflate() {
-        LayoutInflater.from(getContext()).inflate(R.layout.view_media_controller, this);
+        LayoutInflater.from(getContext()).inflate(R.layout.view_simple_media_controller, this);
         initControllerView();
     }
 

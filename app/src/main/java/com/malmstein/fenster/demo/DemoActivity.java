@@ -5,13 +5,13 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.malmstein.fenster.controller.FensterPlayerControllerVisibilityListener;
-import com.malmstein.fenster.controller.FullScreenMediaFensterPlayerController;
+import com.malmstein.fenster.controller.SimpleMediaFensterPlayerController;
 import com.malmstein.fenster.view.FensterVideoView;
 
 public class DemoActivity extends Activity implements FensterPlayerControllerVisibilityListener {
 
     private FensterVideoView textureView;
-    private FullScreenMediaFensterPlayerController fullScreenMediaPlayerController;
+    private SimpleMediaFensterPlayerController fullScreenMediaPlayerController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,13 +27,13 @@ public class DemoActivity extends Activity implements FensterPlayerControllerVis
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         textureView.setVideo("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4",
-                FullScreenMediaFensterPlayerController.DEFAULT_VIDEO_START);
+                SimpleMediaFensterPlayerController.DEFAULT_VIDEO_START);
         textureView.start();
     }
 
     private void bindViews() {
         textureView = (FensterVideoView) findViewById(R.id.play_video_texture);
-        fullScreenMediaPlayerController = (FullScreenMediaFensterPlayerController) findViewById(R.id.play_video_controller);
+        fullScreenMediaPlayerController = (SimpleMediaFensterPlayerController) findViewById(R.id.play_video_controller);
     }
 
     private void initVideo() {
