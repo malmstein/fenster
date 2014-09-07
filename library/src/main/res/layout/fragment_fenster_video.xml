@@ -15,9 +15,7 @@
     android:id="@+id/play_video_controller"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_alignBottom="@id/play_video_texture"
-    android:layout_alignParentBottom="true"
-    android:fitsSystemWindows="true" />
+    android:layout_alignParentBottom="true" />
 
   <com.malmstein.fenster.view.FensterLoadingView
     android:id="@+id/play_video_loading"

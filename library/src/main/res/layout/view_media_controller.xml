@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:id="@+id/media_controller_root"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  android:background="@color/default_bg"
+  android:padding="@dimen/padding_small"
+  android:orientation="vertical"
+  android:layout_gravity="bottom"
   android:fitsSystemWindows="true"
-  android:orientation="vertical">
+  android:gravity="bottom">
 
   <LinearLayout
     android:id="@+id/media_controller_bottom_area"
-    android:background="@color/default_bg"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_above="@+id/media_controller_controls"
     android:orientation="horizontal"
-    android:gravity="top">
+    android:gravity="center">
 
     <TextView
       android:id="@+id/media_controller_time_current"
@@ -42,7 +44,6 @@
     android:id="@+id/media_controller_controls"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/default_bg"
     android:layout_alignParentBottom="true"
     android:gravity="center"
     android:orientation="horizontal">
@@ -63,5 +64,5 @@
 
   </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>
 
