@@ -2,7 +2,6 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/default_bg"
   tools:context=".DemoActivity">
 
   <com.malmstein.fenster.view.TextureVideoView
@@ -12,12 +11,17 @@
     android:keepScreenOn="true"
     android:fitsSystemWindows="true" />
 
-  <com.malmstein.fenster.controller.FullScreenMediaPlayerController
+  <com.malmstein.fenster.controller.MediaPlayerController
     android:id="@+id/play_video_controller"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:animateLayoutChanges="true"
     android:fitsSystemWindows="true" />
+
+  <com.malmstein.fenster.view.LoadingView
+    android:id="@+id/play_video_loading"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
 
 </RelativeLayout>
