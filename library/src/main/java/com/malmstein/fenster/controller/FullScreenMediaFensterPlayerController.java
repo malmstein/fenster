@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import com.malmstein.fenster.R;
 import com.malmstein.fenster.gestures.FensterEventsListener;
-import com.malmstein.fenster.view.VideoTouchRoot;
+import com.malmstein.fenster.view.FensterTouchRoot;
 
 import java.util.Formatter;
 import java.util.Locale;
@@ -219,7 +219,7 @@ public final class FullScreenMediaFensterPlayerController extends FrameLayout im
         mFormatBuilder = new StringBuilder();
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
 
-        VideoTouchRoot touchRoot = (VideoTouchRoot) v.findViewById(R.id.media_controller_touch_root);
+        FensterTouchRoot touchRoot = (FensterTouchRoot) v.findViewById(R.id.media_controller_touch_root);
         touchRoot.setFensterEventsListener(this);
 
         bottomControlsRoot = v.findViewById(R.id.media_controller_bottom_area);

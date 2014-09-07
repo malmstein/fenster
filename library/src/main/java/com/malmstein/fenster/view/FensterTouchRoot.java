@@ -13,20 +13,20 @@ import com.malmstein.fenster.gestures.FensterGestureListener;
 /**
  * A custom layout we put as a layout root to get notified about any screen touches.
  */
-public final class VideoTouchRoot extends FrameLayout {
+public final class FensterTouchRoot extends FrameLayout {
 
     private GestureDetector gestureDetector;
     private FensterGestureListener gestureListener;
 
-    public VideoTouchRoot(final Context context) {
+    public FensterTouchRoot(final Context context) {
         super(context);
     }
 
-    public VideoTouchRoot(final Context context, final AttributeSet attrs) {
+    public FensterTouchRoot(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public VideoTouchRoot(final Context context, final AttributeSet attrs, final int defStyle) {
+    public FensterTouchRoot(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
     }
 

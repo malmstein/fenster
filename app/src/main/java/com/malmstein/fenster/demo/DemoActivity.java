@@ -6,11 +6,11 @@ import android.view.View;
 
 import com.malmstein.fenster.controller.FensterPlayerControllerVisibilityListener;
 import com.malmstein.fenster.controller.FullScreenMediaFensterPlayerController;
-import com.malmstein.fenster.view.TextureVideoView;
+import com.malmstein.fenster.view.FensterVideoView;
 
 public class DemoActivity extends Activity implements FensterPlayerControllerVisibilityListener {
 
-    private TextureVideoView textureView;
+    private FensterVideoView textureView;
     private FullScreenMediaFensterPlayerController fullScreenMediaPlayerController;
 
     @Override
@@ -32,7 +32,7 @@ public class DemoActivity extends Activity implements FensterPlayerControllerVis
     }
 
     private void bindViews() {
-        textureView = (TextureVideoView) findViewById(R.id.play_video_texture);
+        textureView = (FensterVideoView) findViewById(R.id.play_video_texture);
         fullScreenMediaPlayerController = (FullScreenMediaFensterPlayerController) findViewById(R.id.play_video_controller);
     }
 

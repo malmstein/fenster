@@ -7,13 +7,13 @@ import android.widget.FrameLayout;
 
 import com.malmstein.fenster.R;
 
-public class LoadingView extends FrameLayout {
+public class FensterLoadingView extends FrameLayout {
 
-    public LoadingView(Context context, AttributeSet attrs) {
+    public FensterLoadingView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public LoadingView(Context context, AttributeSet attrs, int defStyle) {
+    public FensterLoadingView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 

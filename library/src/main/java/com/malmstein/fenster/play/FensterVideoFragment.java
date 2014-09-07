@@ -11,15 +11,15 @@ import com.malmstein.fenster.controller.FensterPlayerControllerVisibilityListene
 import com.malmstein.fenster.controller.FensterPlayerController;
 import com.malmstein.fenster.controller.FensterVideoStateListener;
 import com.malmstein.fenster.controller.FullScreenMediaFensterPlayerController;
-import com.malmstein.fenster.view.LoadingView;
-import com.malmstein.fenster.view.TextureVideoView;
+import com.malmstein.fenster.view.FensterLoadingView;
+import com.malmstein.fenster.view.FensterVideoView;
 
 public class FensterVideoFragment extends Fragment implements FensterVideoStateListener {
 
     private View contentView;
-    private TextureVideoView textureView;
+    private FensterVideoView textureView;
     private FensterPlayerController fensterPlayerController;
-    private LoadingView loadingView;
+    private FensterLoadingView fensterLoadingView;
 
     public FensterVideoFragment() {
     }
@@ -27,9 +27,9 @@ public class FensterVideoFragment extends Fragment implements FensterVideoStateL
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contentView = inflater.inflate(R.layout.fragment_video_texture, container);
-        textureView = (TextureVideoView) contentView.findViewById(R.id.play_video_texture);
+        textureView = (FensterVideoView) contentView.findViewById(R.id.play_video_texture);
         fensterPlayerController = (FensterPlayerController) contentView.findViewById(R.id.play_video_controller);
-        loadingView = (LoadingView) contentView.findViewById(R.id.play_video_loading);
+        fensterLoadingView = (FensterLoadingView) contentView.findViewById(R.id.play_video_loading);
         return contentView;
     }
 
@@ -56,11 +56,11 @@ public class FensterVideoFragment extends Fragment implements FensterVideoStateL
 
     private void hideLoadingView() {
         fensterPlayerController.hide();
-        loadingView.showLoading();
+        fensterLoadingView.showLoading();
     }
 
     private void showLoadingView(){
-        loadingView.hideLoading();
+        fensterLoadingView.hideLoading();
     }
 
     @Override

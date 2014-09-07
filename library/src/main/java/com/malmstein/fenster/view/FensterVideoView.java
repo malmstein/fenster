@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
  * change from its previously returned value when the VideoView is restored.
  */
 
-public class TextureVideoView extends TextureView implements MediaController.MediaPlayerControl, FensterPlayer {
+public class FensterVideoView extends TextureView implements MediaController.MediaPlayerControl, FensterPlayer {
 
     public static final String TAG = "TextureVideoView";
     public static final int VIDEO_BEGINNING = 0;
@@ -125,11 +125,11 @@ public class TextureVideoView extends TextureView implements MediaController.Med
 
     private MediaControllerStateChangeListener mediaControllerStateChangeListener;
 
-    public TextureVideoView(final Context context, final AttributeSet attrs) {
+    public FensterVideoView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public TextureVideoView(final Context context, final AttributeSet attrs, final int defStyle) {
+    public FensterVideoView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
         videoSizeCalculator = new VideoSizeCalculator();
         initVideoView();
@@ -148,13 +148,13 @@ public class TextureVideoView extends TextureView implements MediaController.Med
     @Override
     public void onInitializeAccessibilityEvent(final AccessibilityEvent event) {
         super.onInitializeAccessibilityEvent(event);
-        event.setClassName(TextureVideoView.class.getName());
+        event.setClassName(FensterVideoView.class.getName());
     }
 
     @Override
     public void onInitializeAccessibilityNodeInfo(final AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
-        info.setClassName(TextureVideoView.class.getName());
+        info.setClassName(FensterVideoView.class.getName());
     }
 
     public int resolveAdjustedSize(final int desiredSize, final int measureSpec) {
