@@ -18,6 +18,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.malmstein.fenster.R;
+import com.malmstein.fenster.gestures.FensterEventsListener;
+import com.malmstein.fenster.gestures.FensterGestureControllerView;
 
 import java.util.Formatter;
 import java.util.Locale;
@@ -31,7 +33,7 @@ import java.util.Locale;
  * It's actually a view currently, as is the android MediaController.
  * (which is a bit odd and should be subject to change.)
  */
-public final class MediaFensterPlayerController extends RelativeLayout implements FensterPlayerController {
+public final class MediaFensterPlayerController extends RelativeLayout implements FensterPlayerController, FensterEventsListener {
 
     /**
      * Called to notify that the control have been made visible or hidden.
@@ -58,6 +60,7 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
     private StringBuilder mFormatBuilder;
     private Formatter mFormatter;
 
+    private FensterGestureControllerView gestureControllerView;
     private ProgressBar mProgress;
     private TextView mEndTime;
     private TextView mCurrentTime;
@@ -95,6 +98,8 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
     }
 
     private void initControllerView() {
+        gestureControllerView = (FensterGestureControllerView) findViewById(R.id.media_controller_gestures_area);
+
         mPauseButton = (ImageButton) findViewById(R.id.media_controller_pause);
         mPauseButton.requestFocus();
         mPauseButton.setOnClickListener(mPauseListener);
@@ -422,4 +427,8 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
         }
     };
 
+    @Override
+    public void onTap() {
+
+    }
 }
