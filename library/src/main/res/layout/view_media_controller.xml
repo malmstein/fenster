@@ -4,12 +4,12 @@
   android:id="@+id/media_controller_root"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:background="@color/default_bg"
   android:fitsSystemWindows="true"
   android:orientation="vertical">
 
   <LinearLayout
     android:id="@+id/media_controller_bottom_area"
+    android:background="@color/default_bg"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_above="@+id/media_controller_controls"
@@ -42,6 +42,7 @@
     android:id="@+id/media_controller_controls"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/default_bg"
     android:layout_alignParentBottom="true"
     android:gravity="center"
     android:orientation="horizontal">

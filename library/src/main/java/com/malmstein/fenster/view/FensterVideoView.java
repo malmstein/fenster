@@ -11,14 +11,12 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnInfoListener;
 import android.net.Uri;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.TextureView;
-import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.MediaController;
@@ -112,18 +110,8 @@ public class FensterVideoView extends TextureView implements MediaController.Med
     private boolean mCanSeekBack;
     private boolean mCanSeekForward;
     private FensterVideoStateListener onPlayStateListener;
-    private ReplayListener replayListener = NULL_REPLAY_LISTENER;
-    private final Runnable replayNotifyRunnable = new Runnable() {
-        @Override
-        public void run() {
-            replayListener.onStillPlaying();
-            postDelayed(this, NOTIFY_REPLAY_INTERVAL_MILLIS);
-        }
-    };
 
     private AlertDialog errorDialog;
-
-    private MediaControllerStateChangeListener mediaControllerStateChangeListener;
 
     public FensterVideoView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
@@ -133,10 +121,6 @@ public class FensterVideoView extends TextureView implements MediaController.Med
         super(context, attrs, defStyle);
         videoSizeCalculator = new VideoSizeCalculator();
         initVideoView();
-    }
-
-    public final void setReplayListener(final ReplayListener replayListener) {
-        this.replayListener = replayListener != null ? replayListener : NULL_REPLAY_LISTENER;
     }
 
     @Override
@@ -206,7 +190,6 @@ public class FensterVideoView extends TextureView implements MediaController.Med
             mMediaPlayer.release();
             mMediaPlayer = null;
             setKeepScreenOn(false);
-            stopPingLoop();
             mCurrentState = STATE_IDLE;
             mTargetState = STATE_IDLE;
         }
@@ -278,20 +261,10 @@ public class FensterVideoView extends TextureView implements MediaController.Med
     private void attachMediaController() {
         if (mMediaPlayer != null && fensterPlayerController != null) {
             fensterPlayerController.setMediaPlayer(this);
-            View anchorView = this.getParent() instanceof View ? (View) this.getParent() : this;
-            fensterPlayerController.setAnchorView(anchorView);
+//            View anchorView = this.getParent() instanceof View ? (View) this.getParent() : this;
+//            fensterPlayerController.setAnchorView(anchorView);
             fensterPlayerController.setEnabled(isInPlaybackState());
         }
-    }
-
-    public void setMediaControllerStateChangeListener(MediaControllerStateChangeListener mediaControllerStateChangeListener) {
-        this.mediaControllerStateChangeListener = mediaControllerStateChangeListener;
-    }
-
-    public interface MediaControllerStateChangeListener {
-        void onMediaControllerOpened(MediaController mediaController);
-
-        void onMediaControllerClosed(MediaController mediaController);
     }
 
     private MediaPlayer.OnVideoSizeChangedListener mSizeChangedListener = new MediaPlayer.OnVideoSizeChangedListener() {
@@ -350,7 +323,6 @@ public class FensterVideoView extends TextureView implements MediaController.Med
         @Override
         public void onCompletion(final MediaPlayer mp) {
             setKeepScreenOn(false);
-            stopPingLoop();
             mCurrentState = STATE_PLAYBACK_COMPLETED;
             mTargetState = STATE_PLAYBACK_COMPLETED;
             hideMediaController();
@@ -628,24 +600,6 @@ public class FensterVideoView extends TextureView implements MediaController.Med
             mCurrentState = STATE_PLAYING;
         }
         mTargetState = STATE_PLAYING;
-        startPingLoop();
-    }
-
-    private void startPingLoop() {
-        final Handler handler = getHandler();
-        if (handler == null) {
-            return;
-        }
-        handler.removeCallbacks(replayNotifyRunnable);
-        handler.post(replayNotifyRunnable);
-    }
-
-    private void stopPingLoop() {
-        final Handler handler = getHandler();
-        if (handler == null) {
-            return;
-        }
-        handler.removeCallbacks(replayNotifyRunnable);
     }
 
     @Override
@@ -658,7 +612,6 @@ public class FensterVideoView extends TextureView implements MediaController.Med
             }
         }
         mTargetState = STATE_PAUSED;
-        stopPingLoop();
     }
 
     public void suspend() {

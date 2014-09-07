@@ -1,6 +1,5 @@
 package com.malmstein.fenster.controller;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -10,12 +9,11 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -33,7 +31,7 @@ import java.util.Locale;
  * It's actually a view currently, as is the android MediaController.
  * (which is a bit odd and should be subject to change.)
  */
-public final class MediaFensterPlayerController extends FrameLayout implements FensterPlayerController {
+public final class MediaFensterPlayerController extends RelativeLayout implements FensterPlayerController {
 
     /**
      * Called to notify that the control have been made visible or hidden.
@@ -43,23 +41,23 @@ public final class MediaFensterPlayerController extends FrameLayout implements F
      */
 
     public static final String TAG = "PlayerController";
+
     public static final int DEFAULT_VIDEO_START = 0;
     private static final int DEFAULT_TIMEOUT = 5000;
 
     private static final int FADE_OUT = 1;
     private static final int SHOW_PROGRESS = 2;
-    private final Context mContext;
+
     private FensterPlayerControllerVisibilityListener visibilityListener;
     private FensterPlayer mFensterPlayer;
+
     private boolean mShowing;
     private boolean mDragging;
-    private boolean mLoading;
     private boolean mFirstTimeLoading = true;
+
     private StringBuilder mFormatBuilder;
     private Formatter mFormatter;
-    private View mAnchor;
-    private View mRoot;
-    private View controlsRoot;
+
     private ProgressBar mProgress;
     private TextView mEndTime;
     private TextView mCurrentTime;
@@ -78,8 +76,12 @@ public final class MediaFensterPlayerController extends FrameLayout implements F
 
     public MediaFensterPlayerController(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
-        mRoot = this;
-        mContext = context;
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        LayoutInflater.from(getContext()).inflate(R.layout.view_media_controller, this);
+        initControllerView();
     }
 
     @Override
@@ -92,53 +94,23 @@ public final class MediaFensterPlayerController extends FrameLayout implements F
         this.visibilityListener = visibilityListener;
     }
 
-    @Override
-    public void setAnchorView(final View view) {
-        mAnchor = view;
-        LayoutParams frameParams = new LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-
-        removeAllViews();
-        View v = makeControllerView();
-        addView(v, frameParams);
-    }
-
-    public void pause() {
-        if (mFensterPlayer != null) {
-            mFensterPlayer.pause();
-            updatePausePlay();
-        }
-    }
-
-    @SuppressLint("InflateParams")
-    private View makeControllerView() {
-        LayoutInflater inflate = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mRoot = inflate.inflate(R.layout.view_media_controller, null);
-        initControllerView(mRoot);
-        return mRoot;
-    }
-
-    private void initControllerView(final View v) {
-        mPauseButton = (ImageButton) v.findViewById(R.id.media_controller_pause);
+    private void initControllerView() {
+        mPauseButton = (ImageButton) findViewById(R.id.media_controller_pause);
         mPauseButton.requestFocus();
         mPauseButton.setOnClickListener(mPauseListener);
 
-        mNextButton = (ImageButton) v.findViewById(R.id.media_controller_next);
-        mPrevButton = (ImageButton) v.findViewById(R.id.media_controller_previous);
+        mNextButton = (ImageButton) findViewById(R.id.media_controller_next);
+        mPrevButton = (ImageButton) findViewById(R.id.media_controller_previous);
 
-        mProgress = (SeekBar) v.findViewById(R.id.media_controller_progress);
+        mProgress = (SeekBar) findViewById(R.id.media_controller_progress);
         SeekBar seeker = (SeekBar) mProgress;
         seeker.setOnSeekBarChangeListener(mSeekListener);
         mProgress.setMax(1000);
 
-        mEndTime = (TextView) v.findViewById(R.id.media_controller_time);
-        mCurrentTime = (TextView) v.findViewById(R.id.media_controller_time_current);
+        mEndTime = (TextView)findViewById(R.id.media_controller_time);
+        mCurrentTime = (TextView) findViewById(R.id.media_controller_time_current);
         mFormatBuilder = new StringBuilder();
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
-
-        controlsRoot = v.findViewById(R.id.media_controller_root);
     }
 
     /**
@@ -159,7 +131,7 @@ public final class MediaFensterPlayerController extends FrameLayout implements F
      */
     @Override
     public void show(final int timeInMilliSeconds) {
-        if (!mShowing && mAnchor != null) {
+        if (!mShowing) {
             setProgress();
             if (mPauseButton != null) {
                 mPauseButton.requestFocus();
@@ -191,10 +163,6 @@ public final class MediaFensterPlayerController extends FrameLayout implements F
         return mShowing;
     }
 
-    public boolean isLoading() {
-        return mLoading;
-    }
-
     public boolean isFirstTimeLoading() {
         return mFirstTimeLoading;
     }
@@ -204,10 +172,6 @@ public final class MediaFensterPlayerController extends FrameLayout implements F
      */
     @Override
     public void hide() {
-        if (mAnchor == null) {
-            return;
-        }
-
         if (mShowing) {
             try {
                 mHandler.removeMessages(SHOW_PROGRESS);
@@ -321,7 +285,7 @@ public final class MediaFensterPlayerController extends FrameLayout implements F
     }
 
     private void updatePausePlay() {
-        if (mRoot == null || mPauseButton == null) {
+        if (mPauseButton == null) {
             return;
         }
 
