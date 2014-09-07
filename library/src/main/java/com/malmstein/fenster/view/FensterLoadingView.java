@@ -22,11 +22,11 @@ public class FensterLoadingView extends FrameLayout {
         LayoutInflater.from(getContext()).inflate(R.layout.view_loading, this);
     }
 
-    public void showLoading() {
+    public void show() {
         setVisibility(VISIBLE);
     }
 
-    public void hideLoading() {
+    public void hide() {
         setVisibility(GONE);
     }
 

@@ -26,7 +26,7 @@ public class FensterVideoFragment extends Fragment implements FensterVideoStateL
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        contentView = inflater.inflate(R.layout.fragment_video_texture, container);
+        contentView = inflater.inflate(R.layout.fragment_fenster_video, container);
         textureView = (FensterVideoView) contentView.findViewById(R.id.play_video_texture);
         fensterPlayerController = (FensterPlayerController) contentView.findViewById(R.id.play_video_controller);
         fensterLoadingView = (FensterLoadingView) contentView.findViewById(R.id.play_video_loading);
@@ -50,17 +50,18 @@ public class FensterVideoFragment extends Fragment implements FensterVideoStateL
         textureView.start();
     }
 
-    public void initVisibilityListener(FensterPlayerControllerVisibilityListener visibilityListener) {
+    public void setVisibilityListener(FensterPlayerControllerVisibilityListener visibilityListener) {
         fensterPlayerController.setVisibilityListener(visibilityListener);
     }
 
-    private void hideLoadingView() {
-        fensterPlayerController.hide();
-        fensterLoadingView.showLoading();
+    public void showFensterController() {
+        fensterLoadingView.hide();
+        fensterPlayerController.show();
     }
 
     private void showLoadingView(){
-        fensterLoadingView.hideLoading();
+        fensterLoadingView.show();
+        fensterPlayerController.hide();
     }
 
     @Override
@@ -70,7 +71,7 @@ public class FensterVideoFragment extends Fragment implements FensterVideoStateL
 
     @Override
     public void onPlay() {
-        hideLoadingView();
+        showFensterController();
     }
 
     @Override

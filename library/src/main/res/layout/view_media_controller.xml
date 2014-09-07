@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/media_controller_root"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:background="@color/default_bg"
+  android:fitsSystemWindows="true"
   android:orientation="vertical">
 
   <LinearLayout
     android:id="@+id/media_controller_bottom_area"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_above="@id/media_controller_controls_root"
+    android:layout_above="@+id/media_controller_controls"
     android:orientation="horizontal"
     android:gravity="top">
 
@@ -37,10 +39,9 @@
   </LinearLayout>
 
   <LinearLayout
-    android:id="@+id/media_controller_controls_root"
+    android:id="@+id/media_controller_controls"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/media_controller_bottom_margin"
     android:layout_alignParentBottom="true"
     android:gravity="center"
     android:orientation="horizontal">
