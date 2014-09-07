@@ -9,7 +9,7 @@
   android:fitsSystemWindows="true"
   android:gravity="bottom">
 
-  <View
+  <com.malmstein.fenster.gestures.FensterGestureControllerView
     android:id="@+id/media_controller_gestures_area"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

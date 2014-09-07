@@ -18,7 +18,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.malmstein.fenster.R;
-import com.malmstein.fenster.gestures.FensterEventsListener;
 import com.malmstein.fenster.view.FensterTouchRoot;
 
 import java.util.Formatter;
@@ -33,7 +32,7 @@ import java.util.Locale;
  * It's actually a view currently, as is the android MediaController.
  * (which is a bit odd and should be subject to change.)
  */
-public final class FullScreenMediaFensterPlayerController extends FrameLayout implements FensterPlayerController, FensterVideoStateListener, FensterEventsListener {
+public final class SimpleMediaFensterPlayerController extends FrameLayout implements FensterPlayerController, FensterVideoStateListener, FensterTouchRoot.OnTouchReceiver {
 
     public static final String TAG = "PlayerController";
     public static final int DEFAULT_VIDEO_START = 0;
@@ -64,15 +63,15 @@ public final class FullScreenMediaFensterPlayerController extends FrameLayout im
     private ProgressBar loadingView;
     private int lastPlayedSeconds = -1;
 
-    public FullScreenMediaFensterPlayerController(final Context context) {
+    public SimpleMediaFensterPlayerController(final Context context) {
         this(context, null);
     }
 
-    public FullScreenMediaFensterPlayerController(final Context context, final AttributeSet attrs) {
+    public SimpleMediaFensterPlayerController(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public FullScreenMediaFensterPlayerController(final Context context, final AttributeSet attrs, final int defStyle) {
+    public SimpleMediaFensterPlayerController(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -112,7 +111,7 @@ public final class FullScreenMediaFensterPlayerController extends FrameLayout im
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
 
         FensterTouchRoot touchRoot = (FensterTouchRoot) findViewById(R.id.media_controller_touch_root);
-        touchRoot.setFensterEventsListener(this);
+        touchRoot.setOnTouchReceiver(this);
 
         bottomControlsRoot = findViewById(R.id.media_controller_bottom_area);
         bottomControlsRoot.setVisibility(View.INVISIBLE);
@@ -123,18 +122,6 @@ public final class FullScreenMediaFensterPlayerController extends FrameLayout im
         loadingView = (ProgressBar) findViewById(R.id.media_controller_loading_view);
     }
 
-    /**
-     * Called by ViewTouchRoot on user touches,
-     * so we can avoid hiding the ui while the user is interacting.
-     */
-    @Override
-    public void onTap() {
-        if (mShowing) {
-            hide();
-        } else {
-            show();
-        }
-    }
 
     /**
      * Show the controller on screen. It will go away
@@ -355,13 +342,13 @@ public final class FullScreenMediaFensterPlayerController extends FrameLayout im
     @Override
     public void onInitializeAccessibilityEvent(final AccessibilityEvent event) {
         super.onInitializeAccessibilityEvent(event);
-        event.setClassName(FullScreenMediaFensterPlayerController.class.getName());
+        event.setClassName(SimpleMediaFensterPlayerController.class.getName());
     }
 
     @Override
     public void onInitializeAccessibilityNodeInfo(final AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
-        info.setClassName(FullScreenMediaFensterPlayerController.class.getName());
+        info.setClassName(SimpleMediaFensterPlayerController.class.getName());
     }
 
     @Override
@@ -483,4 +470,17 @@ public final class FullScreenMediaFensterPlayerController extends FrameLayout im
             show(DEFAULT_TIMEOUT);
         }
     };
+
+    /**
+     * Called by ViewTouchRoot on user touches,
+     * so we can avoid hiding the ui while the user is interacting.
+     */
+    @Override
+    public void onControllerUiTouched() {
+        if (mShowing) {
+            Log.d(TAG, "controller ui touch received!");
+            show();
+        }
+    }
+
 }
