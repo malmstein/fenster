@@ -1,4 +1,4 @@
-package com.malmstein.fenster;
+package com.malmstein.fenster.view;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -23,8 +23,10 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.MediaController;
 
+import com.malmstein.fenster.R;
 import com.malmstein.fenster.controller.Player;
-import com.malmstein.fenster.controller.PlayerController;
+import com.malmstein.fenster.controller.VideoController;
+import com.malmstein.fenster.controller.VideoStateListener;
 
 import java.io.IOException;
 import java.util.Map;
@@ -63,23 +65,6 @@ public class TextureVideoView extends TextureView implements MediaController.Med
         void onStillPlaying();
     }
 
-    // We should keep this close to android.widget.MediaController,
-    // so that porting a controller to android's VideoView remains manageable.
-    public interface VideoController {
-        void setMediaPlayer(Player player);
-
-        void setEnabled(boolean value);
-
-        void setAnchorView(View view);
-
-        void show(int timeInMilliSeconds);
-
-        void show();
-
-        void hide();
-
-    }
-
     private static final ReplayListener NULL_REPLAY_LISTENER = new ReplayListener() {
         @Override
         public void onStillPlaying() {
@@ -116,7 +101,7 @@ public class TextureVideoView extends TextureView implements MediaController.Med
     private SurfaceTexture mSurfaceTexture;
     private MediaPlayer mMediaPlayer = null;
     private int mAudioSession;
-    private PlayerController mConcertPlayerController;
+    private VideoController videoController;
     private OnCompletionListener mOnCompletionListener;
     private MediaPlayer.OnPreparedListener mOnPreparedListener;
     private int mCurrentBufferPercentage;
@@ -126,7 +111,7 @@ public class TextureVideoView extends TextureView implements MediaController.Med
     private boolean mCanPause;
     private boolean mCanSeekBack;
     private boolean mCanSeekForward;
-    private OnPlayStateListener onPlayStateListener;
+    private VideoStateListener onPlayStateListener;
     private ReplayListener replayListener = NULL_REPLAY_LISTENER;
     private final Runnable replayNotifyRunnable = new Runnable() {
         @Override
@@ -284,18 +269,18 @@ public class TextureVideoView extends TextureView implements MediaController.Med
         mErrorListener.onError(mMediaPlayer, MediaPlayer.MEDIA_ERROR_UNKNOWN, 0);
     }
 
-    public void setMediaController(final PlayerController controller) {
+    public void setMediaController(final VideoController controller) {
         hideMediaController();
-        mConcertPlayerController = controller;
+        videoController = controller;
         attachMediaController();
     }
 
     private void attachMediaController() {
-        if (mMediaPlayer != null && mConcertPlayerController != null) {
-            mConcertPlayerController.setMediaPlayer(this);
+        if (mMediaPlayer != null && videoController != null) {
+            videoController.setMediaPlayer(this);
             View anchorView = this.getParent() instanceof View ? (View) this.getParent() : this;
-            mConcertPlayerController.setAnchorView(anchorView);
-            mConcertPlayerController.setEnabled(isInPlaybackState());
+            videoController.setAnchorView(anchorView);
+            videoController.setEnabled(isInPlaybackState());
         }
     }
 
@@ -331,8 +316,8 @@ public class TextureVideoView extends TextureView implements MediaController.Med
             if (mOnPreparedListener != null) {
                 mOnPreparedListener.onPrepared(mMediaPlayer);
             }
-            if (mConcertPlayerController != null) {
-                mConcertPlayerController.setEnabled(true);
+            if (videoController != null) {
+                videoController.setEnabled(true);
             }
             videoSizeCalculator.setVideoSize(mp.getVideoWidth(), mp.getVideoHeight());
 
@@ -355,8 +340,8 @@ public class TextureVideoView extends TextureView implements MediaController.Med
     }
 
     private void showStickyMediaController() {
-        if (mConcertPlayerController != null) {
-            mConcertPlayerController.show(0);
+        if (videoController != null) {
+            videoController.show(0);
         }
     }
 
@@ -410,14 +395,14 @@ public class TextureVideoView extends TextureView implements MediaController.Med
     };
 
     private void hideMediaController() {
-        if (mConcertPlayerController != null) {
-            mConcertPlayerController.hide();
+        if (videoController != null) {
+            videoController.hide();
         }
     }
 
     private void showMediaController() {
-        if (mConcertPlayerController != null) {
-            mConcertPlayerController.show();
+        if (videoController != null) {
+            videoController.show();
         }
     }
 
@@ -590,8 +575,8 @@ public class TextureVideoView extends TextureView implements MediaController.Med
 
     @Override
     public boolean onTrackballEvent(final MotionEvent ev) {
-        if (isInPlaybackState() && mConcertPlayerController != null) {
-            mConcertPlayerController.show();
+        if (isInPlaybackState() && videoController != null) {
+            videoController.show();
         }
         return false;
     }
@@ -605,7 +590,7 @@ public class TextureVideoView extends TextureView implements MediaController.Med
                 keyCode != KeyEvent.KEYCODE_MENU &&
                 keyCode != KeyEvent.KEYCODE_CALL &&
                 keyCode != KeyEvent.KEYCODE_ENDCALL;
-        if (isInPlaybackState() && isKeyCodeSupported && mConcertPlayerController != null) {
+        if (isInPlaybackState() && isKeyCodeSupported && videoController != null) {
             if (keyCode == KeyEvent.KEYCODE_HEADSETHOOK || keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
                 if (mMediaPlayer.isPlaying()) {
                     pause();
@@ -628,7 +613,7 @@ public class TextureVideoView extends TextureView implements MediaController.Med
                 }
                 return true;
             } else {
-                mConcertPlayerController.show();
+                videoController.show();
             }
         }
 
@@ -804,18 +789,9 @@ public class TextureVideoView extends TextureView implements MediaController.Med
         return onPlayStateListener != null;
     }
 
-    public void setOnPlayStateListener(final OnPlayStateListener onPlayStateListener) {
+    public void setOnPlayStateListener(final VideoStateListener onPlayStateListener) {
         this.onPlayStateListener = onPlayStateListener;
     }
 
-    public interface OnPlayStateListener {
-        void onFirstVideoFrameRendered();
-
-        void onPlay();
-
-        void onBuffer();
-
-        boolean onStopWithExternalError(int position);
-    }
 
 }

@@ -1,4 +1,4 @@
-package com.malmstein.fenster;
+package com.malmstein.fenster.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -39,7 +39,7 @@ public final class VideoTouchRoot extends FrameLayout {
             case (MotionEvent.ACTION_DOWN):
                 return false;
             case (MotionEvent.ACTION_MOVE):
-                return true;
+                return false;
             case (MotionEvent.ACTION_UP):
                 return false;
             case (MotionEvent.ACTION_CANCEL):

@@ -6,15 +6,20 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.*;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.malmstein.fenster.R;
-import com.malmstein.fenster.TextureVideoView;
-import com.malmstein.fenster.VideoTouchRoot;
-import com.malmstein.fenster.gestures.FensterEventsListener;
 
 import java.util.Formatter;
 import java.util.Locale;
@@ -27,9 +32,8 @@ import java.util.Locale;
  * <p/>
  * It's actually a view currently, as is the android MediaController.
  * (which is a bit odd and should be subject to change.)
- *
  */
-public final class PlayerController extends FrameLayout implements TextureVideoView.VideoController, TextureVideoView.OnPlayStateListener, FensterEventsListener {
+public final class MediaPlayerController extends FrameLayout implements VideoController {
 
     /**
      * Called to notify that the control have been made visible or hidden.
@@ -37,52 +41,126 @@ public final class PlayerController extends FrameLayout implements TextureVideoV
      * <p/>
      * Implementation must be provided via the corresponding setter.
      */
-    public interface VisibilityListener {
-        void onControlsVisibilityChange(boolean value);
-    }
 
     public static final String TAG = "PlayerController";
-
-    private static final int DEFAULT_TIMEOUT = 5000;
     public static final int DEFAULT_VIDEO_START = 0;
-
+    private static final int DEFAULT_TIMEOUT = 5000;
+    private final OnClickListener mPauseListener = new OnClickListener() {
+        public void onClick(final View v) {
+            doPauseResume();
+            show(DEFAULT_TIMEOUT);
+        }
+    };
     private static final int FADE_OUT = 1;
     private static final int SHOW_PROGRESS = 2;
-
     private final Context mContext;
-    private VisibilityListener visibilityListener;
-    private NavigationListener navigationListener;
+    private ControllerVisibilityListener visibilityListener;
     private Player mPlayer;
     private boolean mShowing;
     private boolean mDragging;
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(final Message msg) {
+            int pos;
+            switch (msg.what) {
+                case FADE_OUT:
+                    if (mPlayer.isPlaying()) {
+                        hide();
+                    } else {
+                        // re-schedule to check again
+                        Message fadeMessage = obtainMessage(FADE_OUT);
+                        removeMessages(FADE_OUT);
+                        sendMessageDelayed(fadeMessage, DEFAULT_TIMEOUT);
+                    }
+                    break;
+                case SHOW_PROGRESS:
+                    pos = setProgress();
+                    if (!mDragging && mShowing && mPlayer.isPlaying()) {
+                        final Message message = obtainMessage(SHOW_PROGRESS);
+                        sendMessageDelayed(message, 1000 - (pos % 1000));
+                    }
+                    break;
+            }
+        }
+    };
     private boolean mLoading;
     private boolean mFirstTimeLoading = true;
     private StringBuilder mFormatBuilder;
     private Formatter mFormatter;
-
     private View mAnchor;
     private View mRoot;
-
     private View bottomControlsRoot;
     private View controlsRoot;
-
     private ProgressBar mProgress;
     private TextView mEndTime;
     private TextView mCurrentTime;
+    // There are two scenarios that can trigger the seekbar listener to trigger:
+    //
+    // The first is the user using the touchpad to adjust the posititon of the
+    // seekbar's thumb. In this case onStartTrackingTouch is called followed by
+    // a number of onProgressChanged notifications, concluded by onStopTrackingTouch.
+    // We're setting the field "mDragging" to true for the duration of the dragging
+    // session to avoid jumps in the position in case of ongoing playback.
+    //
+    // The second scenario involves the user operating the scroll ball, in this
+    // case there WON'T BE onStartTrackingTouch/onStopTrackingTouch notifications,
+    // we will simply apply the updated position without suspending regular updates.
+    private final SeekBar.OnSeekBarChangeListener mSeekListener = new SeekBar.OnSeekBarChangeListener() {
+        public void onStartTrackingTouch(final SeekBar bar) {
+            show(3600000);
+
+            mDragging = true;
+
+            // By removing these pending progress messages we make sure
+            // that a) we won't update the progress while the user adjusts
+            // the seekbar and b) once the user is done dragging the thumb
+            // we will post one of these messages to the queue again and
+            // this ensures that there will be exactly one message queued up.
+            mHandler.removeMessages(SHOW_PROGRESS);
+        }
+
+        public void onProgressChanged(final SeekBar bar, final int progress, final boolean fromuser) {
+            if (!fromuser) {
+                // We're not interested in programmatically generated changes to
+                // the progress bar's position.
+                return;
+            }
+
+            long duration = mPlayer.getDuration();
+            long newposition = (duration * progress) / 1000L;
+            mPlayer.seekTo((int) newposition);
+            if (mCurrentTime != null) {
+                mCurrentTime.setText(stringForTime((int) newposition));
+            }
+        }
+
+        public void onStopTrackingTouch(final SeekBar bar) {
+            mDragging = false;
+            setProgress();
+            updatePausePlay();
+            show(DEFAULT_TIMEOUT);
+
+            // Ensure that progress is properly updated in the future,
+            // the call to show() does not guarantee this because it is a
+            // no-op if we are already showing.
+            mHandler.sendEmptyMessage(SHOW_PROGRESS);
+        }
+    };
     private ImageButton mPauseButton;
     private ImageButton mNextButton;
     private ImageButton mPrevButton;
-    private ProgressBar loadingView;
+    //buffer variable to throttle event propagation
+    private int lastPlayedSeconds = -1;
 
-    public PlayerController(final Context context) {
+    public MediaPlayerController(final Context context) {
         this(context, null);
     }
 
-    public PlayerController(final Context context, final AttributeSet attrs) {
+    public MediaPlayerController(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public PlayerController(final Context context, final AttributeSet attrs, final int defStyle) {
+    public MediaPlayerController(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
         mRoot = this;
         mContext = context;
@@ -94,12 +172,8 @@ public final class PlayerController extends FrameLayout implements TextureVideoV
         updatePausePlay();
     }
 
-    public void setVisibilityListener(final VisibilityListener visibilityListener) {
+    public void setVisibilityListener(final ControllerVisibilityListener visibilityListener) {
         this.visibilityListener = visibilityListener;
-    }
-
-    public void setNavigationListener(final NavigationListener navigationListener) {
-        this.navigationListener = navigationListener;
     }
 
     @Override
@@ -136,10 +210,7 @@ public final class PlayerController extends FrameLayout implements TextureVideoV
         mPauseButton.setOnClickListener(mPauseListener);
 
         mNextButton = (ImageButton) v.findViewById(R.id.media_controller_next);
-        mNextButton.setOnClickListener(nextTrackListener);
-
-        mPrevButton =(ImageButton) v.findViewById(R.id.media_controller_previous);
-        mPrevButton.setOnClickListener(previousTrackListener);
+        mPrevButton = (ImageButton) v.findViewById(R.id.media_controller_previous);
 
         mProgress = (SeekBar) v.findViewById(R.id.media_controller_progress);
         SeekBar seeker = (SeekBar) mProgress;
@@ -151,30 +222,11 @@ public final class PlayerController extends FrameLayout implements TextureVideoV
         mFormatBuilder = new StringBuilder();
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
 
-
-        VideoTouchRoot touchRoot = (VideoTouchRoot) v.findViewById(R.id.media_controller_touch_root);
-        touchRoot.setFensterEventsListener(this);
-
         bottomControlsRoot = v.findViewById(R.id.media_controller_bottom_area);
         bottomControlsRoot.setVisibility(View.INVISIBLE);
 
         controlsRoot = v.findViewById(R.id.media_controller_controls_root);
         controlsRoot.setVisibility(View.INVISIBLE);
-
-        loadingView = (ProgressBar) v.findViewById(R.id.media_controller_loading_view);
-    }
-
-    /**
-     * Called by ViewTouchRoot on user touches,
-     * so we can avoid hiding the ui while the user is interacting.
-     */
-    @Override
-    public void onTap() {
-        if (mShowing) {
-            hide();
-        } else {
-            show();
-        }
     }
 
     /**
@@ -258,32 +310,6 @@ public final class PlayerController extends FrameLayout implements TextureVideoV
         }
     }
 
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(final Message msg) {
-            int pos;
-            switch (msg.what) {
-                case FADE_OUT:
-                    if (mPlayer.isPlaying()) {
-                        hide();
-                    } else {
-                        // re-schedule to check again
-                        Message fadeMessage = obtainMessage(FADE_OUT);
-                        removeMessages(FADE_OUT);
-                        sendMessageDelayed(fadeMessage, DEFAULT_TIMEOUT);
-                    }
-                    break;
-                case SHOW_PROGRESS:
-                    pos = setProgress();
-                    if (!mDragging && mShowing && mPlayer.isPlaying()) {
-                        final Message message = obtainMessage(SHOW_PROGRESS);
-                        sendMessageDelayed(message, 1000 - (pos % 1000));
-                    }
-                    break;
-            }
-        }
-    };
-
     private String stringForTime(final int timeMs) {
         int totalSeconds = timeMs / 1000;
 
@@ -298,9 +324,6 @@ public final class PlayerController extends FrameLayout implements TextureVideoV
             return mFormatter.format("%02d:%02d", minutes, seconds).toString();
         }
     }
-
-    //buffer variable to throttle event propagation
-    private int lastPlayedSeconds = -1;
 
     private int setProgress() {
         if (mPlayer == null || mDragging) {
@@ -406,59 +429,6 @@ public final class PlayerController extends FrameLayout implements TextureVideoV
         updatePausePlay();
     }
 
-    // There are two scenarios that can trigger the seekbar listener to trigger:
-    //
-    // The first is the user using the touchpad to adjust the posititon of the
-    // seekbar's thumb. In this case onStartTrackingTouch is called followed by
-    // a number of onProgressChanged notifications, concluded by onStopTrackingTouch.
-    // We're setting the field "mDragging" to true for the duration of the dragging
-    // session to avoid jumps in the position in case of ongoing playback.
-    //
-    // The second scenario involves the user operating the scroll ball, in this
-    // case there WON'T BE onStartTrackingTouch/onStopTrackingTouch notifications,
-    // we will simply apply the updated position without suspending regular updates.
-    private final SeekBar.OnSeekBarChangeListener mSeekListener = new SeekBar.OnSeekBarChangeListener() {
-        public void onStartTrackingTouch(final SeekBar bar) {
-            show(3600000);
-
-            mDragging = true;
-
-            // By removing these pending progress messages we make sure
-            // that a) we won't update the progress while the user adjusts
-            // the seekbar and b) once the user is done dragging the thumb
-            // we will post one of these messages to the queue again and
-            // this ensures that there will be exactly one message queued up.
-            mHandler.removeMessages(SHOW_PROGRESS);
-        }
-
-        public void onProgressChanged(final SeekBar bar, final int progress, final boolean fromuser) {
-            if (!fromuser) {
-                // We're not interested in programmatically generated changes to
-                // the progress bar's position.
-                return;
-            }
-
-            long duration = mPlayer.getDuration();
-            long newposition = (duration * progress) / 1000L;
-            mPlayer.seekTo((int) newposition);
-            if (mCurrentTime != null) {
-                mCurrentTime.setText(stringForTime((int) newposition));
-            }
-        }
-
-        public void onStopTrackingTouch(final SeekBar bar) {
-            mDragging = false;
-            setProgress();
-            updatePausePlay();
-            show(DEFAULT_TIMEOUT);
-
-            // Ensure that progress is properly updated in the future,
-            // the call to show() does not guarantee this because it is a
-            // no-op if we are already showing.
-            mHandler.sendEmptyMessage(SHOW_PROGRESS);
-        }
-    };
-
     @Override
     public void setEnabled(final boolean enabled) {
 
@@ -481,78 +451,13 @@ public final class PlayerController extends FrameLayout implements TextureVideoV
     @Override
     public void onInitializeAccessibilityEvent(final AccessibilityEvent event) {
         super.onInitializeAccessibilityEvent(event);
-        event.setClassName(PlayerController.class.getName());
+        event.setClassName(MediaPlayerController.class.getName());
     }
 
     @Override
     public void onInitializeAccessibilityNodeInfo(final AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
-        info.setClassName(PlayerController.class.getName());
-    }
-
-    private final OnClickListener mPauseListener = new OnClickListener() {
-        public void onClick(final View v) {
-            doPauseResume();
-            show(DEFAULT_TIMEOUT);
-        }
-    };
-
-    private final OnClickListener previousTrackListener = new OnClickListener() {
-        @Override
-        public void onClick(final View v) {
-            if (navigationListener != null) {
-                navigationListener.onPreviousSelected();
-            }
-        }
-    };
-
-    private final OnClickListener nextTrackListener = new OnClickListener() {
-        @Override
-        public void onClick(final View v) {
-            if (navigationListener != null) {
-                navigationListener.onNextSelected();
-            }
-        }
-    };
-
-    @Override
-    public void onFirstVideoFrameRendered() {
-        controlsRoot.setVisibility(View.VISIBLE);
-        bottomControlsRoot.setVisibility(View.VISIBLE);
-        mFirstTimeLoading = false;
-    }
-
-    @Override
-    public void onPlay() {
-        hideLoadingView();
-    }
-
-    @Override
-    public void onBuffer() {
-        showLoadingView();
-    }
-
-    @Override
-    public boolean onStopWithExternalError(int position) {
-        return false;
-    }
-
-    private void hideLoadingView() {
-        hide();
-        loadingView.setVisibility(View.GONE);
-
-        mLoading = false;
-    }
-
-    private void showLoadingView() {
-        mLoading = true;
-        loadingView.setVisibility(View.VISIBLE);
-    }
-
-    public interface NavigationListener {
-        void onNextSelected();
-
-        void onPreviousSelected();
+        info.setClassName(MediaPlayerController.class.getName());
     }
 
 }

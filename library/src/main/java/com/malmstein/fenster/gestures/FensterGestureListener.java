@@ -20,8 +20,8 @@ public class FensterGestureListener implements GestureDetector.OnGestureListener
     @Override
     public boolean onDown(MotionEvent e) {
         Log.d(DEBUG_TAG, "onDown: " + e.toString());
-        fensterEventsListener.onTap();
-        return true;
+//        fensterEventsListener.onTap();
+        return false;
     }
 
     @Override

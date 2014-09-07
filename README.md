@@ -37,7 +37,7 @@ Displaying a video
   android:background="@color/default_bg"
   tools:context=".DemoActivity">
 
-  <com.malmstein.fenster.TextureVideoView
+  <com.malmstein.fenster.view.TextureVideoView
     android:id="@+id/play_video_texture"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

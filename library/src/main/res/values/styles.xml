@@ -16,7 +16,7 @@
   </style>
 
   <style name="MediaButton.Next">
-    <item name="android:src">@android:drawable/ic_media_next</item>
+    <item name="android:src">@android:drawable/ic_media_ff</item>
   </style>
 
   <style name="MediaText">
