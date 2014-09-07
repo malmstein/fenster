@@ -1,68 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:id="@+id/media_controller_root"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:background="@color/default_bg"
-  android:padding="@dimen/padding_small"
+  android:layout_height="match_parent"
   android:orientation="vertical"
   android:layout_gravity="bottom"
   android:fitsSystemWindows="true"
   android:gravity="bottom">
 
-  <LinearLayout
-    android:id="@+id/media_controller_bottom_area"
+  <View
+    android:id="@+id/media_controller_gestures_area"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center">
-
-    <TextView
-      android:id="@+id/media_controller_time_current"
-      style="@style/MediaText"
-      android:layout_width="0dip"
-      android:layout_height="wrap_content"
-      android:layout_weight="1" />
-
-    <SeekBar
-      android:id="@+id/media_controller_progress"
-      android:layout_width="0dip"
-      android:layout_height="@dimen/media_controller_seekbar_height"
-      android:layout_weight="8" />
-
-    <TextView
-      android:id="@+id/media_controller_time"
-      style="@style/MediaText"
-      android:layout_width="0dip"
-      android:layout_height="wrap_content"
-      android:layout_weight="1" />
-
-  </LinearLayout>
+    android:layout_height="match_parent"
+    android:layout_above="@+id/media_controller_bottom_root"/>
 
   <LinearLayout
-    android:id="@+id/media_controller_controls"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:id="@+id/media_controller_bottom_root"
     android:layout_alignParentBottom="true"
-    android:gravity="center"
-    android:orientation="horizontal">
+    android:background="@color/default_bg"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding_small"
+    android:orientation="vertical">
 
-    <ImageButton
-      android:id="@+id/media_controller_previous"
-      style="@style/MediaButton.Previous"
-      android:contentDescription="Previous Piece" />
+    <LinearLayout
+      android:id="@+id/media_controller_bottom_area"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:gravity="center">
 
-    <ImageButton
-      android:id="@+id/media_controller_pause"
-      style="@style/MediaButton.Play" />
+      <TextView
+        android:id="@+id/media_controller_time_current"
+        style="@style/MediaText"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
 
-    <ImageButton
-      android:id="@+id/media_controller_next"
-      style="@style/MediaButton.Next"
-      android:contentDescription="Next Piece" />
+      <SeekBar
+        android:id="@+id/media_controller_progress"
+        android:layout_width="0dip"
+        android:layout_height="@dimen/media_controller_seekbar_height"
+        android:layout_weight="8" />
+
+      <TextView
+        android:id="@+id/media_controller_time"
+        style="@style/MediaText"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:id="@+id/media_controller_controls"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:gravity="center"
+      android:orientation="horizontal">
+
+      <ImageButton
+        android:id="@+id/media_controller_previous"
+        style="@style/MediaButton.Previous"
+        android:contentDescription="Previous Piece" />
+
+      <ImageButton
+        android:id="@+id/media_controller_pause"
+        style="@style/MediaButton.Play" />
+
+      <ImageButton
+        android:id="@+id/media_controller_next"
+        style="@style/MediaButton.Next"
+        android:contentDescription="Next Piece" />
+
+    </LinearLayout>
 
   </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>
 
