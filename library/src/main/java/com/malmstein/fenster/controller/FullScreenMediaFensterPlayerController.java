@@ -20,6 +20,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.malmstein.fenster.R;
+import com.malmstein.fenster.gestures.FensterEventsListener;
+import com.malmstein.fenster.view.VideoTouchRoot;
 
 import java.util.Formatter;
 import java.util.Locale;
@@ -33,14 +35,7 @@ import java.util.Locale;
  * It's actually a view currently, as is the android MediaController.
  * (which is a bit odd and should be subject to change.)
  */
-public final class MediaPlayerController extends FrameLayout implements VideoController {
-
-    /**
-     * Called to notify that the control have been made visible or hidden.
-     * Implementation might want to show/hide actionbar or do other ui adjustments.
-     * <p/>
-     * Implementation must be provided via the corresponding setter.
-     */
+public final class FullScreenMediaFensterPlayerController extends FrameLayout implements FensterPlayerController, FensterVideoStateListener, FensterEventsListener {
 
     public static final String TAG = "PlayerController";
     public static final int DEFAULT_VIDEO_START = 0;
@@ -54,8 +49,8 @@ public final class MediaPlayerController extends FrameLayout implements VideoCon
     private static final int FADE_OUT = 1;
     private static final int SHOW_PROGRESS = 2;
     private final Context mContext;
-    private ControllerVisibilityListener visibilityListener;
-    private Player mPlayer;
+    private FensterPlayerControllerVisibilityListener visibilityListener;
+    private FensterPlayer mFensterPlayer;
     private boolean mShowing;
     private boolean mDragging;
     private final Handler mHandler = new Handler() {
@@ -64,7 +59,7 @@ public final class MediaPlayerController extends FrameLayout implements VideoCon
             int pos;
             switch (msg.what) {
                 case FADE_OUT:
-                    if (mPlayer.isPlaying()) {
+                    if (mFensterPlayer.isPlaying()) {
                         hide();
                     } else {
                         // re-schedule to check again
@@ -75,7 +70,7 @@ public final class MediaPlayerController extends FrameLayout implements VideoCon
                     break;
                 case SHOW_PROGRESS:
                     pos = setProgress();
-                    if (!mDragging && mShowing && mPlayer.isPlaying()) {
+                    if (!mDragging && mShowing && mFensterPlayer.isPlaying()) {
                         final Message message = obtainMessage(SHOW_PROGRESS);
                         sendMessageDelayed(message, 1000 - (pos % 1000));
                     }
@@ -126,9 +121,9 @@ public final class MediaPlayerController extends FrameLayout implements VideoCon
                 return;
             }
 
-            long duration = mPlayer.getDuration();
+            long duration = mFensterPlayer.getDuration();
             long newposition = (duration * progress) / 1000L;
-            mPlayer.seekTo((int) newposition);
+            mFensterPlayer.seekTo((int) newposition);
             if (mCurrentTime != null) {
                 mCurrentTime.setText(stringForTime((int) newposition));
             }
@@ -149,30 +144,32 @@ public final class MediaPlayerController extends FrameLayout implements VideoCon
     private ImageButton mPauseButton;
     private ImageButton mNextButton;
     private ImageButton mPrevButton;
+    private ProgressBar loadingView;
     //buffer variable to throttle event propagation
     private int lastPlayedSeconds = -1;
 
-    public MediaPlayerController(final Context context) {
+    public FullScreenMediaFensterPlayerController(final Context context) {
         this(context, null);
     }
 
-    public MediaPlayerController(final Context context, final AttributeSet attrs) {
+    public FullScreenMediaFensterPlayerController(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public MediaPlayerController(final Context context, final AttributeSet attrs, final int defStyle) {
+    public FullScreenMediaFensterPlayerController(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
         mRoot = this;
         mContext = context;
     }
 
     @Override
-    public void setMediaPlayer(final Player player) {
-        mPlayer = player;
+    public void setMediaPlayer(final FensterPlayer fensterPlayer) {
+        mFensterPlayer = fensterPlayer;
         updatePausePlay();
     }
 
-    public void setVisibilityListener(final ControllerVisibilityListener visibilityListener) {
+    @Override
+    public void setVisibilityListener(final FensterPlayerControllerVisibilityListener visibilityListener) {
         this.visibilityListener = visibilityListener;
     }
 
@@ -190,8 +187,8 @@ public final class MediaPlayerController extends FrameLayout implements VideoCon
     }
 
     public void pause() {
-        if (mPlayer != null) {
-            mPlayer.pause();
+        if (mFensterPlayer != null) {
+            mFensterPlayer.pause();
             updatePausePlay();
         }
     }
@@ -199,7 +196,7 @@ public final class MediaPlayerController extends FrameLayout implements VideoCon
     @SuppressLint("InflateParams")
     private View makeControllerView() {
         LayoutInflater inflate = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mRoot = inflate.inflate(R.layout.view_media_controller, null);
+        mRoot = inflate.inflate(R.layout.view_full_screen_media_controller, null);
         initControllerView(mRoot);
         return mRoot;
     }
@@ -222,11 +219,29 @@ public final class MediaPlayerController extends FrameLayout implements VideoCon
         mFormatBuilder = new StringBuilder();
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
 
+        VideoTouchRoot touchRoot = (VideoTouchRoot) v.findViewById(R.id.media_controller_touch_root);
+        touchRoot.setFensterEventsListener(this);
+
         bottomControlsRoot = v.findViewById(R.id.media_controller_bottom_area);
         bottomControlsRoot.setVisibility(View.INVISIBLE);
 
         controlsRoot = v.findViewById(R.id.media_controller_controls_root);
         controlsRoot.setVisibility(View.INVISIBLE);
+
+        loadingView = (ProgressBar) v.findViewById(R.id.media_controller_loading_view);
+    }
+
+    /**
+     * Called by ViewTouchRoot on user touches,
+     * so we can avoid hiding the ui while the user is interacting.
+     */
+    @Override
+    public void onTap() {
+        if (mShowing) {
+            hide();
+        } else {
+            show();
+        }
     }
 
     /**
@@ -326,18 +341,18 @@ public final class MediaPlayerController extends FrameLayout implements VideoCon
     }
 
     private int setProgress() {
-        if (mPlayer == null || mDragging) {
+        if (mFensterPlayer == null || mDragging) {
             return 0;
         }
-        int position = mPlayer.getCurrentPosition();
-        int duration = mPlayer.getDuration();
+        int position = mFensterPlayer.getCurrentPosition();
+        int duration = mFensterPlayer.getDuration();
         if (mProgress != null) {
             if (duration > 0) {
                 // use long to avoid overflow
                 long pos = 1000L * position / duration;
                 mProgress.setProgress((int) pos);
             }
-            int percent = mPlayer.getBufferPercentage();
+            int percent = mFensterPlayer.getBufferPercentage();
             mProgress.setSecondaryProgress(percent * 10);
         }
 
@@ -377,16 +392,16 @@ public final class MediaPlayerController extends FrameLayout implements VideoCon
             }
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY) {
-            if (uniqueDown && !mPlayer.isPlaying()) {
-                mPlayer.start();
+            if (uniqueDown && !mFensterPlayer.isPlaying()) {
+                mFensterPlayer.start();
                 updatePausePlay();
                 show(DEFAULT_TIMEOUT);
             }
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_MEDIA_STOP
                 || keyCode == KeyEvent.KEYCODE_MEDIA_PAUSE) {
-            if (uniqueDown && mPlayer.isPlaying()) {
-                mPlayer.pause();
+            if (uniqueDown && mFensterPlayer.isPlaying()) {
+                mFensterPlayer.pause();
                 updatePausePlay();
                 show(DEFAULT_TIMEOUT);
             }
@@ -413,7 +428,7 @@ public final class MediaPlayerController extends FrameLayout implements VideoCon
             return;
         }
 
-        if (mPlayer.isPlaying()) {
+        if (mFensterPlayer.isPlaying()) {
             mPauseButton.setImageResource(android.R.drawable.ic_media_pause);
         } else {
             mPauseButton.setImageResource(android.R.drawable.ic_media_play);
@@ -421,10 +436,10 @@ public final class MediaPlayerController extends FrameLayout implements VideoCon
     }
 
     private void doPauseResume() {
-        if (mPlayer.isPlaying()) {
-            mPlayer.pause();
+        if (mFensterPlayer.isPlaying()) {
+            mFensterPlayer.pause();
         } else {
-            mPlayer.start();
+            mFensterPlayer.start();
         }
         updatePausePlay();
     }
@@ -451,13 +466,47 @@ public final class MediaPlayerController extends FrameLayout implements VideoCon
     @Override
     public void onInitializeAccessibilityEvent(final AccessibilityEvent event) {
         super.onInitializeAccessibilityEvent(event);
-        event.setClassName(MediaPlayerController.class.getName());
+        event.setClassName(FullScreenMediaFensterPlayerController.class.getName());
     }
 
     @Override
     public void onInitializeAccessibilityNodeInfo(final AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
-        info.setClassName(MediaPlayerController.class.getName());
+        info.setClassName(FullScreenMediaFensterPlayerController.class.getName());
+    }
+
+    @Override
+    public void onFirstVideoFrameRendered() {
+        controlsRoot.setVisibility(View.VISIBLE);
+        bottomControlsRoot.setVisibility(View.VISIBLE);
+        mFirstTimeLoading = false;
+    }
+
+    @Override
+    public void onPlay() {
+        hideLoadingView();
+    }
+
+    @Override
+    public void onBuffer() {
+        showLoadingView();
+    }
+
+    @Override
+    public boolean onStopWithExternalError(int position) {
+        return false;
+    }
+
+    private void hideLoadingView() {
+        hide();
+        loadingView.setVisibility(View.GONE);
+
+        mLoading = false;
+    }
+
+    private void showLoadingView() {
+        mLoading = true;
+        loadingView.setVisibility(View.VISIBLE);
     }
 
 }

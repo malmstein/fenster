@@ -4,7 +4,7 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="@color/default_bg"
-  class="com.malmstein.fenster.play.TextureVideoFragment"
+  class="com.malmstein.fenster.play.FensterVideoFragment"
   tools:context=".DemoFragmentActivity"
   tools:layout="@layout/fragment_video_texture"/>
 

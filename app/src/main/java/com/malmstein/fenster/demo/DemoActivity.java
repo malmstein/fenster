@@ -4,14 +4,14 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.malmstein.fenster.controller.ControllerVisibilityListener;
-import com.malmstein.fenster.controller.FullScreenMediaPlayerController;
+import com.malmstein.fenster.controller.FensterPlayerControllerVisibilityListener;
+import com.malmstein.fenster.controller.FullScreenMediaFensterPlayerController;
 import com.malmstein.fenster.view.TextureVideoView;
 
-public class DemoActivity extends Activity implements ControllerVisibilityListener {
+public class DemoActivity extends Activity implements FensterPlayerControllerVisibilityListener {
 
     private TextureVideoView textureView;
-    private FullScreenMediaPlayerController fullScreenMediaPlayerController;
+    private FullScreenMediaFensterPlayerController fullScreenMediaPlayerController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,13 +27,13 @@ public class DemoActivity extends Activity implements ControllerVisibilityListen
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         textureView.setVideo("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4",
-                FullScreenMediaPlayerController.DEFAULT_VIDEO_START);
+                FullScreenMediaFensterPlayerController.DEFAULT_VIDEO_START);
         textureView.start();
     }
 
     private void bindViews() {
         textureView = (TextureVideoView) findViewById(R.id.play_video_texture);
-        fullScreenMediaPlayerController = (FullScreenMediaPlayerController) findViewById(R.id.play_video_controller);
+        fullScreenMediaPlayerController = (FullScreenMediaFensterPlayerController) findViewById(R.id.play_video_controller);
     }
 
     private void initVideo() {

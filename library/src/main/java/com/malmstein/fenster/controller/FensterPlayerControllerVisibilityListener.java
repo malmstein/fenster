@@ -6,7 +6,7 @@ package com.malmstein.fenster.controller;
  * <p/>
  * Implementation must be provided via the corresponding setter.
  */
-public interface ControllerVisibilityListener {
+public interface FensterPlayerControllerVisibilityListener {
 
     void onControlsVisibilityChange(boolean value);
 

@@ -1,6 +1,6 @@
 package com.malmstein.fenster.controller;
 
-public interface Player {
+public interface FensterPlayer {
     void start();
 
     void pause();

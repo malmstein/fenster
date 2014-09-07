@@ -2,9 +2,9 @@ package com.malmstein.fenster.controller;
 
 import android.view.View;
 
-public interface VideoController {
+public interface FensterPlayerController {
 
-    void setMediaPlayer(Player player);
+    void setMediaPlayer(FensterPlayer fensterPlayer);
 
     void setEnabled(boolean value);
 
@@ -16,6 +16,6 @@ public interface VideoController {
 
     void hide();
 
-    void setVisibilityListener(ControllerVisibilityListener visibilityListener);
+    void setVisibilityListener(FensterPlayerControllerVisibilityListener visibilityListener);
 
 }

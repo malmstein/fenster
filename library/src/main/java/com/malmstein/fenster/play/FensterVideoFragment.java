@@ -7,28 +7,28 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.malmstein.fenster.R;
-import com.malmstein.fenster.controller.ControllerVisibilityListener;
-import com.malmstein.fenster.controller.FullScreenMediaPlayerController;
-import com.malmstein.fenster.controller.VideoController;
-import com.malmstein.fenster.controller.VideoStateListener;
+import com.malmstein.fenster.controller.FensterPlayerControllerVisibilityListener;
+import com.malmstein.fenster.controller.FensterPlayerController;
+import com.malmstein.fenster.controller.FensterVideoStateListener;
+import com.malmstein.fenster.controller.FullScreenMediaFensterPlayerController;
 import com.malmstein.fenster.view.LoadingView;
 import com.malmstein.fenster.view.TextureVideoView;
 
-public class TextureVideoFragment extends Fragment implements VideoStateListener {
+public class FensterVideoFragment extends Fragment implements FensterVideoStateListener {
 
     private View contentView;
     private TextureVideoView textureView;
-    private VideoController playerController;
+    private FensterPlayerController fensterPlayerController;
     private LoadingView loadingView;
 
-    public TextureVideoFragment() {
+    public FensterVideoFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contentView = inflater.inflate(R.layout.fragment_video_texture, container);
         textureView = (TextureVideoView) contentView.findViewById(R.id.play_video_texture);
-        playerController = (VideoController) contentView.findViewById(R.id.play_video_controller);
+        fensterPlayerController = (FensterPlayerController) contentView.findViewById(R.id.play_video_controller);
         loadingView = (LoadingView) contentView.findViewById(R.id.play_video_loading);
         return contentView;
     }
@@ -40,22 +40,22 @@ public class TextureVideoFragment extends Fragment implements VideoStateListener
     }
 
     private void initVideo() {
-        textureView.setMediaController(playerController);
+        textureView.setMediaController(fensterPlayerController);
         textureView.setOnPlayStateListener(this);
     }
 
     public void playExampleVideo() {
         textureView.setVideo("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4",
-                FullScreenMediaPlayerController.DEFAULT_VIDEO_START);
+                FullScreenMediaFensterPlayerController.DEFAULT_VIDEO_START);
         textureView.start();
     }
 
-    public void initVisibilityListener(ControllerVisibilityListener visibilityListener) {
-        playerController.setVisibilityListener(visibilityListener);
+    public void initVisibilityListener(FensterPlayerControllerVisibilityListener visibilityListener) {
+        fensterPlayerController.setVisibilityListener(visibilityListener);
     }
 
     private void hideLoadingView() {
-        playerController.hide();
+        fensterPlayerController.hide();
         loadingView.showLoading();
     }
 
@@ -65,7 +65,7 @@ public class TextureVideoFragment extends Fragment implements VideoStateListener
 
     @Override
     public void onFirstVideoFrameRendered() {
-        playerController.show();
+        fensterPlayerController.show();
     }
 
     @Override

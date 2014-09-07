@@ -11,7 +11,7 @@
     android:keepScreenOn="true"
     android:fitsSystemWindows="true" />
 
-  <com.malmstein.fenster.controller.MediaPlayerController
+  <com.malmstein.fenster.controller.MediaFensterPlayerController
     android:id="@+id/play_video_controller"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

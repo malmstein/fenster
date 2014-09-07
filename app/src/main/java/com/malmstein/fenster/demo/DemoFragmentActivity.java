@@ -3,7 +3,7 @@ package com.malmstein.fenster.demo;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.malmstein.fenster.play.TextureVideoFragment;
+import com.malmstein.fenster.play.FensterVideoFragment;
 
 public class DemoFragmentActivity extends Activity {
 
@@ -19,7 +19,7 @@ public class DemoFragmentActivity extends Activity {
         findVideoFragment().playExampleVideo();
     }
 
-    private TextureVideoFragment findVideoFragment(){
-        return (TextureVideoFragment) getFragmentManager().findFragmentById(R.id.play_demo_fragment);
+    private FensterVideoFragment findVideoFragment(){
+        return (FensterVideoFragment) getFragmentManager().findFragmentById(R.id.play_demo_fragment);
     }
 }

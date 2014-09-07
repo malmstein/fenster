@@ -24,9 +24,9 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.MediaController;
 
 import com.malmstein.fenster.R;
-import com.malmstein.fenster.controller.Player;
-import com.malmstein.fenster.controller.VideoController;
-import com.malmstein.fenster.controller.VideoStateListener;
+import com.malmstein.fenster.controller.FensterPlayer;
+import com.malmstein.fenster.controller.FensterPlayerController;
+import com.malmstein.fenster.controller.FensterVideoStateListener;
 
 import java.io.IOException;
 import java.util.Map;
@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
  * change from its previously returned value when the VideoView is restored.
  */
 
-public class TextureVideoView extends TextureView implements MediaController.MediaPlayerControl, Player {
+public class TextureVideoView extends TextureView implements MediaController.MediaPlayerControl, FensterPlayer {
 
     public static final String TAG = "TextureVideoView";
     public static final int VIDEO_BEGINNING = 0;
@@ -101,7 +101,7 @@ public class TextureVideoView extends TextureView implements MediaController.Med
     private SurfaceTexture mSurfaceTexture;
     private MediaPlayer mMediaPlayer = null;
     private int mAudioSession;
-    private VideoController videoController;
+    private FensterPlayerController fensterPlayerController;
     private OnCompletionListener mOnCompletionListener;
     private MediaPlayer.OnPreparedListener mOnPreparedListener;
     private int mCurrentBufferPercentage;
@@ -111,7 +111,7 @@ public class TextureVideoView extends TextureView implements MediaController.Med
     private boolean mCanPause;
     private boolean mCanSeekBack;
     private boolean mCanSeekForward;
-    private VideoStateListener onPlayStateListener;
+    private FensterVideoStateListener onPlayStateListener;
     private ReplayListener replayListener = NULL_REPLAY_LISTENER;
     private final Runnable replayNotifyRunnable = new Runnable() {
         @Override
@@ -269,18 +269,18 @@ public class TextureVideoView extends TextureView implements MediaController.Med
         mErrorListener.onError(mMediaPlayer, MediaPlayer.MEDIA_ERROR_UNKNOWN, 0);
     }
 
-    public void setMediaController(final VideoController controller) {
+    public void setMediaController(final FensterPlayerController controller) {
         hideMediaController();
-        videoController = controller;
+        fensterPlayerController = controller;
         attachMediaController();
     }
 
     private void attachMediaController() {
-        if (mMediaPlayer != null && videoController != null) {
-            videoController.setMediaPlayer(this);
+        if (mMediaPlayer != null && fensterPlayerController != null) {
+            fensterPlayerController.setMediaPlayer(this);
             View anchorView = this.getParent() instanceof View ? (View) this.getParent() : this;
-            videoController.setAnchorView(anchorView);
-            videoController.setEnabled(isInPlaybackState());
+            fensterPlayerController.setAnchorView(anchorView);
+            fensterPlayerController.setEnabled(isInPlaybackState());
         }
     }
 
@@ -316,8 +316,8 @@ public class TextureVideoView extends TextureView implements MediaController.Med
             if (mOnPreparedListener != null) {
                 mOnPreparedListener.onPrepared(mMediaPlayer);
             }
-            if (videoController != null) {
-                videoController.setEnabled(true);
+            if (fensterPlayerController != null) {
+                fensterPlayerController.setEnabled(true);
             }
             videoSizeCalculator.setVideoSize(mp.getVideoWidth(), mp.getVideoHeight());
 
@@ -340,8 +340,8 @@ public class TextureVideoView extends TextureView implements MediaController.Med
     }
 
     private void showStickyMediaController() {
-        if (videoController != null) {
-            videoController.show(0);
+        if (fensterPlayerController != null) {
+            fensterPlayerController.show(0);
         }
     }
 
@@ -395,14 +395,14 @@ public class TextureVideoView extends TextureView implements MediaController.Med
     };
 
     private void hideMediaController() {
-        if (videoController != null) {
-            videoController.hide();
+        if (fensterPlayerController != null) {
+            fensterPlayerController.hide();
         }
     }
 
     private void showMediaController() {
-        if (videoController != null) {
-            videoController.show();
+        if (fensterPlayerController != null) {
+            fensterPlayerController.show();
         }
     }
 
@@ -575,8 +575,8 @@ public class TextureVideoView extends TextureView implements MediaController.Med
 
     @Override
     public boolean onTrackballEvent(final MotionEvent ev) {
-        if (isInPlaybackState() && videoController != null) {
-            videoController.show();
+        if (isInPlaybackState() && fensterPlayerController != null) {
+            fensterPlayerController.show();
         }
         return false;
     }
@@ -590,7 +590,7 @@ public class TextureVideoView extends TextureView implements MediaController.Med
                 keyCode != KeyEvent.KEYCODE_MENU &&
                 keyCode != KeyEvent.KEYCODE_CALL &&
                 keyCode != KeyEvent.KEYCODE_ENDCALL;
-        if (isInPlaybackState() && isKeyCodeSupported && videoController != null) {
+        if (isInPlaybackState() && isKeyCodeSupported && fensterPlayerController != null) {
             if (keyCode == KeyEvent.KEYCODE_HEADSETHOOK || keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
                 if (mMediaPlayer.isPlaying()) {
                     pause();
@@ -613,7 +613,7 @@ public class TextureVideoView extends TextureView implements MediaController.Med
                 }
                 return true;
             } else {
-                videoController.show();
+                fensterPlayerController.show();
             }
         }
 
@@ -789,7 +789,7 @@ public class TextureVideoView extends TextureView implements MediaController.Med
         return onPlayStateListener != null;
     }
 
-    public void setOnPlayStateListener(final VideoStateListener onPlayStateListener) {
+    public void setOnPlayStateListener(final FensterVideoStateListener onPlayStateListener) {
         this.onPlayStateListener = onPlayStateListener;
     }
 

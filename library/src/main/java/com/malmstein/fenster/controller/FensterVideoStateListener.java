@@ -1,6 +1,6 @@
 package com.malmstein.fenster.controller;
 
-public interface VideoStateListener {
+public interface FensterVideoStateListener {
 
     void onFirstVideoFrameRendered();
 
