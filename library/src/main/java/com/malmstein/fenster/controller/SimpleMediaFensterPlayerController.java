@@ -18,6 +18,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.malmstein.fenster.R;
+import com.malmstein.fenster.play.FensterPlayer;
+import com.malmstein.fenster.play.FensterVideoStateListener;
 import com.malmstein.fenster.view.FensterTouchRoot;
 
 import java.util.Formatter;

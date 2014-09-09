@@ -25,6 +25,8 @@ public class FensterGestureControllerView extends View{
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        setClickable(true);
+        setFocusable(true);
         gestureDetector = new GestureDetector(getContext(), new FensterGestureListener());
     }
 

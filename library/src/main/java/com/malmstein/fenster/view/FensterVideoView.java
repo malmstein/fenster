@@ -22,9 +22,9 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.MediaController;
 
 import com.malmstein.fenster.R;
-import com.malmstein.fenster.controller.FensterPlayer;
+import com.malmstein.fenster.play.FensterPlayer;
 import com.malmstein.fenster.controller.FensterPlayerController;
-import com.malmstein.fenster.controller.FensterVideoStateListener;
+import com.malmstein.fenster.play.FensterVideoStateListener;
 
 import java.io.IOException;
 import java.util.Map;

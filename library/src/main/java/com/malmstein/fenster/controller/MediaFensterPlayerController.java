@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.malmstein.fenster.R;
 import com.malmstein.fenster.gestures.FensterEventsListener;
 import com.malmstein.fenster.gestures.FensterGestureControllerView;
+import com.malmstein.fenster.play.FensterPlayer;
 
 import java.util.Formatter;
 import java.util.Locale;
@@ -99,8 +100,6 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
 
     private void initControllerView() {
         gestureControllerView = (FensterGestureControllerView) findViewById(R.id.media_controller_gestures_area);
-        gestureControllerView.setClickable(true);
-        gestureControllerView.setFocusable(true);
 
         mPauseButton = (ImageButton) findViewById(R.id.media_controller_pause);
         mPauseButton.requestFocus();

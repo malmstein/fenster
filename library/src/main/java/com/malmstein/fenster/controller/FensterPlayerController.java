@@ -1,5 +1,7 @@
 package com.malmstein.fenster.controller;
 
+import com.malmstein.fenster.play.FensterPlayer;
+
 public interface FensterPlayerController {
 
     void setMediaPlayer(FensterPlayer fensterPlayer);

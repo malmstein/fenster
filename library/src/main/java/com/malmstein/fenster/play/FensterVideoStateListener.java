@@ -1,4 +1,4 @@
-package com.malmstein.fenster.controller;
+package com.malmstein.fenster.play;
 
 public interface FensterVideoStateListener {
 

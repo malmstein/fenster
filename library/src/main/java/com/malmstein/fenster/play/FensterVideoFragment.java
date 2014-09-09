@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import com.malmstein.fenster.R;
 import com.malmstein.fenster.controller.FensterPlayerControllerVisibilityListener;
 import com.malmstein.fenster.controller.FensterPlayerController;
-import com.malmstein.fenster.controller.FensterVideoStateListener;
 import com.malmstein.fenster.controller.SimpleMediaFensterPlayerController;
 import com.malmstein.fenster.view.FensterLoadingView;
 import com.malmstein.fenster.view.FensterVideoView;
