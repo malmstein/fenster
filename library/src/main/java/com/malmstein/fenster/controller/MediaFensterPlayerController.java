@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -62,7 +61,7 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
     private Formatter mFormatter;
 
     private FensterGestureControllerView gestureControllerView;
-    private ProgressBar mProgress;
+    private SeekBar mProgress;
     private TextView mEndTime;
     private TextView mCurrentTime;
     private ImageButton mPauseButton;
@@ -109,8 +108,7 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
         mPrevButton = (ImageButton) findViewById(R.id.media_controller_previous);
 
         mProgress = (SeekBar) findViewById(R.id.media_controller_progress);
-        SeekBar seeker = (SeekBar) mProgress;
-        seeker.setOnSeekBarChangeListener(mSeekListener);
+        mProgress.setOnSeekBarChangeListener(mSeekListener);
         mProgress.setMax(1000);
 
         mEndTime = (TextView)findViewById(R.id.media_controller_time);
