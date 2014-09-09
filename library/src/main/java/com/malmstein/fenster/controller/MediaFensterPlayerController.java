@@ -99,6 +99,8 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
 
     private void initControllerView() {
         gestureControllerView = (FensterGestureControllerView) findViewById(R.id.media_controller_gestures_area);
+        gestureControllerView.setClickable(true);
+        gestureControllerView.setFocusable(true);
 
         mPauseButton = (ImageButton) findViewById(R.id.media_controller_pause);
         mPauseButton.requestFocus();

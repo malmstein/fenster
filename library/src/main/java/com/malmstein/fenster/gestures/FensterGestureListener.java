@@ -3,53 +3,52 @@ package com.malmstein.fenster.gestures;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.ViewConfiguration;
 
 public class FensterGestureListener implements GestureDetector.OnGestureListener {
 
-    private static final String DEBUG_TAG = "FensterGestureListener";
-
-    private final FensterEventsListener fensterEventsListener;
-    private final ViewConfiguration viewConfiguration;
-
-    public FensterGestureListener(FensterEventsListener touchController, ViewConfiguration viewConfiguration) {
-        this.fensterEventsListener = touchController;
-        this.viewConfiguration = viewConfiguration;
-    }
-
-    @Override
-    public boolean onDown(MotionEvent e) {
-        Log.d(DEBUG_TAG, "onDown: " + e.toString());
-//        fensterEventsListener.onTap();
-        return true;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent e) {
-        Log.d(DEBUG_TAG, "onShowPress: " + e.toString());
-    }
+    public static final String TAG = "FensterGestureListener";
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
-        Log.d(DEBUG_TAG, "onSingleTapUp: " + e.toString());
-        return true;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        Log.d(DEBUG_TAG, "onScroll: " + e1.toString() + e2.toString());
-        return true;
+        // Up motion completing a single tap occurred.
+        Log.i(TAG, "Single Tap Up");
+        return false;
     }
 
     @Override
     public void onLongPress(MotionEvent e) {
-        Log.d(DEBUG_TAG, "onLongPress: " + e.toString());
+        // Touch has been long enough to indicate a long press.
+        // Does not indicate motion is complete yet (no up event necessarily)
+        Log.i(TAG, "Long Press");
     }
 
     @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        Log.d(DEBUG_TAG, "onFling: " + e1.toString() + e2.toString());
-        return true;
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+                            float distanceY) {
+        // User attempted to scroll
+        Log.i(TAG, "Scroll");
+        return false;
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+                           float velocityY) {
+        // Fling event occurred.  Notification of this one happens after an "up" event.
+        Log.i(TAG, "Fling");
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+        // User performed a down event, and hasn't moved yet.
+        Log.i(TAG, "Show Press");
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        // "Down" event - User touched the screen.
+        Log.i(TAG, "Down");
+        return false;
     }
 
 }
