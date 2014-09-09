@@ -5,34 +5,41 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.malmstein.fenster.controller.FensterPlayerControllerVisibilityListener;
-import com.malmstein.fenster.play.FensterVideoFragment;
+import com.malmstein.fenster.controller.SimpleMediaFensterPlayerController;
+import com.malmstein.fenster.view.FensterVideoView;
 
-public class DemoFragmentActivity extends Activity implements FensterPlayerControllerVisibilityListener {
+public class SimpleMediaPlayerActivity extends Activity implements FensterPlayerControllerVisibilityListener {
+
+    private FensterVideoView textureView;
+    private SimpleMediaFensterPlayerController fullScreenMediaPlayerController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_demo_fragment);
+
+        setContentView(R.layout.activity_simple_media_player);
+
+        bindViews();
+        initVideo();
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        initVideo();
+        textureView.setVideo("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4",
+                SimpleMediaFensterPlayerController.DEFAULT_VIDEO_START);
+        textureView.start();
     }
 
-    private void initVideo(){
-        findVideoFragment().setVisibilityListener(this);
-        findVideoFragment().playExampleVideo();
+    private void bindViews() {
+        textureView = (FensterVideoView) findViewById(R.id.play_video_texture);
+        fullScreenMediaPlayerController = (SimpleMediaFensterPlayerController) findViewById(R.id.play_video_controller);
     }
 
-    private FensterVideoFragment findVideoFragment(){
-        return (FensterVideoFragment) getFragmentManager().findFragmentById(R.id.play_demo_fragment);
-    }
-
-    @Override
-    public void onControlsVisibilityChange(boolean value) {
-        setSystemUiVisibility(value);
+    private void initVideo() {
+        fullScreenMediaPlayerController.setVisibilityListener(this);
+        textureView.setMediaController(fullScreenMediaPlayerController);
+        textureView.setOnPlayStateListener(fullScreenMediaPlayerController);
     }
 
     private void setSystemUiVisibility(final boolean visible) {
@@ -52,9 +59,14 @@ public class DemoFragmentActivity extends Activity implements FensterPlayerContr
             @Override
             public void onSystemUiVisibilityChange(final int visibility) {
                 if ((visibility & View.SYSTEM_UI_FLAG_LOW_PROFILE) == 0) {
-                    findVideoFragment().showFensterController();
+                    fullScreenMediaPlayerController.show();
                 }
             }
         });
+    }
+
+    @Override
+    public void onControlsVisibilityChange(final boolean value) {
+        setSystemUiVisibility(value);
     }
 }

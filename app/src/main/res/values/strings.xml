@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Fenster</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+  <string name="app_name">Fenster</string>
+  <string name="demo_activity_label">This demo shows two different MediaPlayer controllers. The Simple Media Controller demo displays a video in a TextureView with a customised Media Player Controller. The second demo extends de first one, allowing to use gestures in order to control the Media Player. </string>
+
+  <string name="action_about">About</string>
+
+  <string name="title_simple_media_player">Simple Media Player Controller</string>
+  <string name="title_gesture_media_player">Gesture Media Player Controller</string>
 
 </resources>

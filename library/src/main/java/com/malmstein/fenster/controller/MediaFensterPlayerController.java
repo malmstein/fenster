@@ -99,6 +99,7 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
 
     private void initControllerView() {
         gestureControllerView = (FensterGestureControllerView) findViewById(R.id.media_controller_gestures_area);
+        gestureControllerView.setFensterEventsListener(this);
 
         mPauseButton = (ImageButton) findViewById(R.id.media_controller_pause);
         mPauseButton.requestFocus();
@@ -428,6 +429,6 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
 
     @Override
     public void onTap() {
-
+        Log.i(TAG, "Single Tap Up");
     }
 }
