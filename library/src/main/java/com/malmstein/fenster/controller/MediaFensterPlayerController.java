@@ -431,4 +431,34 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
     public void onTap() {
         Log.i(TAG, "Single Tap Up");
     }
+
+    @Override
+    public void onHorizontalScroll(int distance, MotionEvent e2) {
+
+    }
+
+    @Override
+    public void onVerticalScroll(int distance, MotionEvent e2) {
+
+    }
+
+    @Override
+    public void onSwipeRight() {
+
+    }
+
+    @Override
+    public void onSwipeLeft() {
+
+    }
+
+    @Override
+    public void onSwipeBottom() {
+
+    }
+
+    @Override
+    public void onSwipeTop() {
+
+    }
 }

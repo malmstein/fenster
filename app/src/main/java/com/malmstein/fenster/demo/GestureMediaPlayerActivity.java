@@ -12,13 +12,13 @@ public class GestureMediaPlayerActivity extends Activity implements FensterPlaye
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gesture_media_player);
+        setContentView(R.layout.activity_gesture_test);
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        initVideo();
+//        initVideo();
     }
 
     private void initVideo(){

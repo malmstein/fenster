@@ -26,10 +26,9 @@
       android:theme="@style/FensterFullscreenTheme"></activity>
     <activity
       android:name=".GestureMediaPlayerActivity"
-      android:configChanges="orientation|keyboardHidden|screenSize"
       android:label="@string/app_name"
-      android:screenOrientation="sensorLandscape"
-      android:theme="@style/FensterFullscreenTheme" />
+      android:screenOrientation="sensorLandscape" />
+
   </application>
 
 </manifest>

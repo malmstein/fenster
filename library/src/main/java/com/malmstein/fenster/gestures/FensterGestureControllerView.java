@@ -5,8 +5,9 @@ import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 
-public class FensterGestureControllerView extends View implements FensterEventsListener {
+public class FensterGestureControllerView extends View{
 
     private GestureDetector gestureDetector;
     private FensterEventsListener listener;
@@ -41,11 +42,7 @@ public class FensterGestureControllerView extends View implements FensterEventsL
     }
 
     public void setFensterEventsListener(FensterEventsListener listener){
-        gestureDetector = new GestureDetector(getContext(), new FensterGestureListener(listener));
+        gestureDetector = new GestureDetector(getContext(), new FensterGestureListener(listener, ViewConfiguration.get(getContext())));
     }
 
-    @Override
-    public void onTap() {
-
-    }
 }
