@@ -442,12 +442,12 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
     }
 
     @Override
-    public void onHorizontalScroll(int distance, MotionEvent e2) {
-        trackTouchEvent(e2, mProgress);
+    public void onHorizontalScroll(MotionEvent event) {
+        updateVideoProgressBar(event);
     }
 
     @Override
-    public void onVerticalScroll(int distance, MotionEvent e2) {
+    public void onVerticalScroll(MotionEvent event) {
 
     }
 
@@ -471,11 +471,16 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
 
     }
 
-    private void trackTouchEvent(MotionEvent event, SeekBar seekbar) {
+    private void updateVideoProgressBar(MotionEvent event) {
+        mSeekListener.onProgressChanged(mProgress, extractMotionDistance(event, mProgress), true);
+    }
+
+    private int extractMotionDistance(MotionEvent event, SeekBar seekbar) {
         final int width = seekbar.getWidth();
         final int mPaddingRight = seekbar.getPaddingRight();
         final int mPaddingLeft = seekbar.getPaddingLeft();
         final int available = width - mPaddingLeft - mPaddingRight;
+
         int x = (int) event.getX();
         float scale;
         float progress = 0;
@@ -492,6 +497,8 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
         final int max = seekbar.getMax();
         progress += scale * max;
 
-        mSeekListener.onProgressChanged(mProgress, (int) progress, true);
+        return (int) progress;
     }
+
+
 }
