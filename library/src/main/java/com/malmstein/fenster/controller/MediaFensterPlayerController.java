@@ -55,12 +55,14 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
 
     private boolean mShowing;
     private boolean mDragging;
+    private boolean mManualDragging;
     private boolean mFirstTimeLoading = true;
 
     private StringBuilder mFormatBuilder;
     private Formatter mFormatter;
 
     private FensterGestureControllerView gestureControllerView;
+    private View bottomControlsArea;
     private SeekBar mProgress;
     private TextView mEndTime;
     private TextView mCurrentTime;
@@ -98,6 +100,8 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
     }
 
     private void initControllerView() {
+        bottomControlsArea = findViewById(R.id.media_controller_bottom_root);
+
         gestureControllerView = (FensterGestureControllerView) findViewById(R.id.media_controller_gestures_area);
         gestureControllerView.setFensterEventsListener(this);
 
@@ -137,6 +141,7 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
     @Override
     public void show(final int timeInMilliSeconds) {
         if (!mShowing) {
+            showBottomArea();
             setProgress();
             if (mPauseButton != null) {
                 mPauseButton.requestFocus();
@@ -162,6 +167,10 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
             visibilityListener.onControlsVisibilityChange(true);
         }
 
+    }
+
+    private void showBottomArea(){
+        bottomControlsArea.setVisibility(View.VISIBLE);
     }
 
     public boolean isShowing() {
@@ -374,7 +383,7 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
         }
 
         public void onProgressChanged(final SeekBar bar, final int progress, final boolean fromuser) {
-            if (!fromuser) {
+            if (!fromuser && !mManualDragging) {
                 // We're not interested in programmatically generated changes to
                 // the progress bar's position.
                 return;
@@ -434,7 +443,7 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
 
     @Override
     public void onHorizontalScroll(int distance, MotionEvent e2) {
-
+        trackTouchEvent(e2, mProgress);
     }
 
     @Override
@@ -460,5 +469,29 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
     @Override
     public void onSwipeTop() {
 
+    }
+
+    private void trackTouchEvent(MotionEvent event, SeekBar seekbar) {
+        final int width = seekbar.getWidth();
+        final int mPaddingRight = seekbar.getPaddingRight();
+        final int mPaddingLeft = seekbar.getPaddingLeft();
+        final int available = width - mPaddingLeft - mPaddingRight;
+        int x = (int) event.getX();
+        float scale;
+        float progress = 0;
+
+        if (x < mPaddingLeft) {
+            scale = 0.0f;
+        } else if (x > width - mPaddingRight) {
+            scale = 1.0f;
+        } else {
+            scale = (float) (x - mPaddingLeft) / (float) available;
+            progress = 0;
+        }
+
+        final int max = seekbar.getMax();
+        progress += scale * max;
+
+        mSeekListener.onProgressChanged(mProgress, (int) progress, true);
     }
 }

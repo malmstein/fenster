@@ -18,6 +18,7 @@
   <LinearLayout
     android:id="@+id/media_controller_bottom_root"
     android:layout_alignParentBottom="true"
+    android:visibility="gone"
     android:background="@color/default_bg"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
