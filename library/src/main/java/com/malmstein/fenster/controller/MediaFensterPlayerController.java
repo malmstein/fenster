@@ -442,12 +442,12 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
     }
 
     @Override
-    public void onHorizontalScroll(MotionEvent event) {
-        updateVideoProgressBar(event);
+    public void onHorizontalScroll(MotionEvent event, float delta) {
+        updateVideoProgressBar(delta);
     }
 
     @Override
-    public void onVerticalScroll(MotionEvent event) {
+    public void onVerticalScroll(MotionEvent event, float scale) {
 
     }
 
@@ -471,34 +471,34 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
 
     }
 
-    private void updateVideoProgressBar(MotionEvent event) {
-        mSeekListener.onProgressChanged(mProgress, extractMotionDistance(event, mProgress), true);
+    private void updateVideoProgressBar(float delta) {
+        mSeekListener.onProgressChanged(mProgress, extractHorizontalDeltaScale(delta, mProgress), true);
     }
 
-    private int extractMotionDistance(MotionEvent event, SeekBar seekbar) {
-        final int width = seekbar.getWidth();
-        final int mPaddingRight = seekbar.getPaddingRight();
-        final int mPaddingLeft = seekbar.getPaddingLeft();
-        final int available = width - mPaddingLeft - mPaddingRight;
+    private int extractHorizontalDeltaScale(float deltaX, SeekBar seekbar) {
+        return extractDeltaScale(getWidth(), deltaX, seekbar);
+    }
 
-        int x = (int) event.getX();
+    private int extractVerticalDeltaScale(float deltaY, SeekBar seekbar) {
+        return extractDeltaScale(getHeight(), deltaY, seekbar);
+    }
+
+    private int extractDeltaScale(int availableSpace, float deltaX, SeekBar seekbar){
+        int x = (int) deltaX;
         float scale;
-        float progress = 0;
-
-        if (x < mPaddingLeft) {
-            scale = 0.0f;
-        } else if (x > width - mPaddingRight) {
-            scale = 1.0f;
-        } else {
-            scale = (float) (x - mPaddingLeft) / (float) available;
-            progress = 0;
-        }
-
+        float progress = seekbar.getProgress();
         final int max = seekbar.getMax();
-        progress += scale * max;
+
+        scale = (float) (x) / (float) availableSpace;
+
+        if (x < 0) {
+            progress = 0;
+            progress = progress - (scale * max);
+        } else {
+            progress += scale * max;
+        }
 
         return (int) progress;
     }
-
 
 }

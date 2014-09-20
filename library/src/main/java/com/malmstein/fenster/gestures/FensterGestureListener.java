@@ -9,16 +9,13 @@ public class FensterGestureListener implements GestureDetector.OnGestureListener
 
     private static final int SWIPE_THRESHOLD = 100;
     private final int minFlingVelocity;
-    private final int maxFLingVelocity;
 
     public static final String TAG = "FensterGestureListener";
     private final FensterEventsListener listener;
 
     public FensterGestureListener(FensterEventsListener listener, ViewConfiguration viewConfiguration) {
         this.listener = listener;
-
         minFlingVelocity = viewConfiguration.getScaledMinimumFlingVelocity();
-        maxFLingVelocity = viewConfiguration.getScaledMaximumFlingVelocity();
     }
 
     @Override
@@ -44,7 +41,7 @@ public class FensterGestureListener implements GestureDetector.OnGestureListener
 
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
             if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
-                listener.onHorizontalScroll((int) deltaX, e2);
+                listener.onHorizontalScroll(e2, deltaX);
                 if (deltaX > 0) {
                     Log.i(TAG, "Slide right");
                 } else {
@@ -53,7 +50,7 @@ public class FensterGestureListener implements GestureDetector.OnGestureListener
             }
         } else {
             if (Math.abs(deltaY) > SWIPE_THRESHOLD) {
-                listener.onVerticalScroll((int) deltaX, e2);
+                listener.onVerticalScroll(e2, deltaY);
                 if (deltaY > 0) {
                     Log.i(TAG, "Slide down");
                 } else {
@@ -100,13 +97,11 @@ public class FensterGestureListener implements GestureDetector.OnGestureListener
 
     @Override
     public void onShowPress(MotionEvent e) {
-        // User performed a down event, and hasn't moved yet.
         Log.i(TAG, "Show Press");
     }
 
     @Override
     public boolean onDown(MotionEvent e) {
-        // "Down" event - User touched the screen.
         Log.i(TAG, "Down");
         return false;
     }

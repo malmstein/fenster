@@ -6,9 +6,9 @@ public interface FensterEventsListener {
 
     void onTap();
 
-    void onHorizontalScroll(MotionEvent event);
+    void onHorizontalScroll(MotionEvent event, float delta);
 
-    void onVerticalScroll(MotionEvent event);
+    void onVerticalScroll(MotionEvent event, float delta);
 
     void onSwipeRight();
 
