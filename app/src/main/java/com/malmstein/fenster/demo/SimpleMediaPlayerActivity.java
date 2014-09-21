@@ -3,21 +3,21 @@ package com.malmstein.fenster.demo;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
-import com.malmstein.fenster.PlayerController;
-import com.malmstein.fenster.TextureVideoView;
+import com.malmstein.fenster.controller.FensterPlayerControllerVisibilityListener;
+import com.malmstein.fenster.controller.SimpleMediaFensterPlayerController;
+import com.malmstein.fenster.view.FensterVideoView;
 
-public class DemoActivity extends Activity implements PlayerController.NavigationListener, PlayerController.VisibilityListener {
+public class SimpleMediaPlayerActivity extends Activity implements FensterPlayerControllerVisibilityListener {
 
-    private TextureVideoView textureView;
-    private PlayerController playerController;
+    private FensterVideoView textureView;
+    private SimpleMediaFensterPlayerController fullScreenMediaPlayerController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_demo);
+        setContentView(R.layout.activity_simple_media_player);
 
         bindViews();
         initVideo();
@@ -27,20 +27,19 @@ public class DemoActivity extends Activity implements PlayerController.Navigatio
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         textureView.setVideo("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4",
-                PlayerController.DEFAULT_VIDEO_START);
+                SimpleMediaFensterPlayerController.DEFAULT_VIDEO_START);
         textureView.start();
     }
 
     private void bindViews() {
-        textureView = (TextureVideoView) findViewById(R.id.play_video_texture);
-        playerController = (PlayerController) findViewById(R.id.play_video_controller);
+        textureView = (FensterVideoView) findViewById(R.id.play_video_texture);
+        fullScreenMediaPlayerController = (SimpleMediaFensterPlayerController) findViewById(R.id.play_video_controller);
     }
 
     private void initVideo() {
-        playerController.setNavigationListener(this);
-        playerController.setVisibilityListener(this);
-        textureView.setMediaController(playerController);
-        textureView.setOnPlayStateListener(playerController);
+        fullScreenMediaPlayerController.setVisibilityListener(this);
+        textureView.setMediaController(fullScreenMediaPlayerController);
+        textureView.setOnPlayStateListener(fullScreenMediaPlayerController);
     }
 
     private void setSystemUiVisibility(final boolean visible) {
@@ -60,20 +59,10 @@ public class DemoActivity extends Activity implements PlayerController.Navigatio
             @Override
             public void onSystemUiVisibilityChange(final int visibility) {
                 if ((visibility & View.SYSTEM_UI_FLAG_LOW_PROFILE) == 0) {
-                    playerController.show();
+                    fullScreenMediaPlayerController.show();
                 }
             }
         });
-    }
-
-    @Override
-    public void onNextSelected() {
-        Toast.makeText(this, "Next track selected", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onPreviousSelected() {
-        Toast.makeText(this, "Previous track selected", Toast.LENGTH_LONG).show();
     }
 
     @Override

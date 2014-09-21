@@ -1,22 +1,28 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/default_bg"
-  tools:context=".DemoActivity">
+  android:orientation="vertical"
+  android:padding="@dimen/activity_horizontal_margin">
 
-  <com.malmstein.fenster.TextureVideoView
-    android:id="@+id/play_video_texture"
+  <TextView
+    android:id="@+id/demo_activity_label"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:keepScreenOn="true"
+    android:layout_height="wrap_content"
+    android:text="@string/demo_activity_label"
     android:gravity="center" />
 
-  <com.malmstein.fenster.PlayerController
-    android:id="@+id/play_video_controller"
+  <Button
+    android:id="@+id/start_simple_media_player_button"
+    android:layout_marginTop="@dimen/activity_vertical_margin"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    android:fitsSystemWindows="true" />
+    android:layout_height="wrap_content"
+    android:text="@string/title_simple_media_player"/>
 
-</FrameLayout>
+  <Button
+    android:id="@+id/start_gesture_media_player_button"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/title_gesture_media_player"/>
+
+</LinearLayout>

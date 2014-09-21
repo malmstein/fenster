@@ -1,16 +1,25 @@
-package com.malmstein.fenster;
+package com.malmstein.fenster.controller;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.*;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
+import com.malmstein.fenster.R;
+import com.malmstein.fenster.gestures.FensterEventsListener;
+import com.malmstein.fenster.gestures.FensterGestureControllerView;
+import com.malmstein.fenster.play.FensterPlayer;
 
 import java.util.Formatter;
 import java.util.Locale;
@@ -24,7 +33,7 @@ import java.util.Locale;
  * It's actually a view currently, as is the android MediaController.
  * (which is a bit odd and should be subject to change.)
  */
-public final class PlayerController extends FrameLayout implements VideoTouchRoot.OnTouchReceiver, TextureVideoView.VideoController, TextureVideoView.OnPlayStateListener {
+public final class MediaFensterPlayerController extends RelativeLayout implements FensterPlayerController, FensterEventsListener {
 
     /**
      * Called to notify that the control have been made visible or hidden.
@@ -32,153 +41,85 @@ public final class PlayerController extends FrameLayout implements VideoTouchRoo
      * <p/>
      * Implementation must be provided via the corresponding setter.
      */
-    public interface VisibilityListener {
-        void onControlsVisibilityChange(boolean value);
-    }
 
     public static final String TAG = "PlayerController";
 
-    private static final int DEFAULT_TIMEOUT = 5000;
     public static final int DEFAULT_VIDEO_START = 0;
+    private static final int DEFAULT_TIMEOUT = 5000;
 
     private static final int FADE_OUT = 1;
     private static final int SHOW_PROGRESS = 2;
 
-    private final Context mContext;
-    private VisibilityListener visibilityListener;
-    private NavigationListener navigationListener;
-    private Player mPlayer;
+    private FensterPlayerControllerVisibilityListener visibilityListener;
+    private FensterPlayer mFensterPlayer;
+
     private boolean mShowing;
     private boolean mDragging;
-    private boolean mLoading;
+    private boolean mManualDragging;
     private boolean mFirstTimeLoading = true;
+
     private StringBuilder mFormatBuilder;
     private Formatter mFormatter;
 
-    private View mAnchor;
-    private View mRoot;
-
-    private View bottomControlsRoot;
-    private View controlsRoot;
-
-    private ProgressBar mProgress;
+    private FensterGestureControllerView gestureControllerView;
+    private View bottomControlsArea;
+    private SeekBar mProgress;
     private TextView mEndTime;
     private TextView mCurrentTime;
     private ImageButton mPauseButton;
     private ImageButton mNextButton;
     private ImageButton mPrevButton;
-    private ProgressBar loadingView;
+    private int lastPlayedSeconds = -1;
 
-    public PlayerController(final Context context) {
+    public MediaFensterPlayerController(final Context context) {
         this(context, null);
     }
 
-    public PlayerController(final Context context, final AttributeSet attrs) {
+    public MediaFensterPlayerController(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public PlayerController(final Context context, final AttributeSet attrs, final int defStyle) {
+    public MediaFensterPlayerController(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
-        mRoot = this;
-        mContext = context;
     }
 
     @Override
-    public void setMediaPlayer(final Player player) {
-        mPlayer = player;
+    protected void onFinishInflate() {
+        LayoutInflater.from(getContext()).inflate(R.layout.view_media_controller, this);
+        initControllerView();
+    }
+
+    @Override
+    public void setMediaPlayer(final FensterPlayer fensterPlayer) {
+        mFensterPlayer = fensterPlayer;
         updatePausePlay();
     }
 
-    public void setVisibilityListener(final VisibilityListener visibilityListener) {
+    public void setVisibilityListener(final FensterPlayerControllerVisibilityListener visibilityListener) {
         this.visibilityListener = visibilityListener;
     }
 
-    public void setNavigationListener(final NavigationListener navigationListener) {
-        this.navigationListener = navigationListener;
-    }
+    private void initControllerView() {
+        bottomControlsArea = findViewById(R.id.media_controller_bottom_root);
 
-    @Override
-    public void setAnchorView(final View view) {
-        mAnchor = view;
-        LayoutParams frameParams = new LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-        );
+        gestureControllerView = (FensterGestureControllerView) findViewById(R.id.media_controller_gestures_area);
+        gestureControllerView.setFensterEventsListener(this);
 
-        removeAllViews();
-        View v = makeControllerView();
-        addView(v, frameParams);
-    }
-
-    public void pause() {
-        if (mPlayer != null) {
-            mPlayer.pause();
-            updatePausePlay();
-        }
-    }
-
-    @SuppressLint("InflateParams")
-    private View makeControllerView() {
-        LayoutInflater inflate = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mRoot = inflate.inflate(R.layout.view_media_controller, null);
-        initControllerView(mRoot);
-        return mRoot;
-    }
-
-    private void initControllerView(final View v) {
-        mPauseButton = (ImageButton) v.findViewById(R.id.media_controller_pause);
+        mPauseButton = (ImageButton) findViewById(R.id.media_controller_pause);
         mPauseButton.requestFocus();
         mPauseButton.setOnClickListener(mPauseListener);
 
-        mNextButton = (ImageButton) v.findViewById(R.id.media_controller_next);
-        mNextButton.setOnClickListener(nextTrackListener);
+        mNextButton = (ImageButton) findViewById(R.id.media_controller_next);
+        mPrevButton = (ImageButton) findViewById(R.id.media_controller_previous);
 
-        mPrevButton =(ImageButton) v.findViewById(R.id.media_controller_previous);
-        mPrevButton.setOnClickListener(previousTrackListener);
-
-        mProgress = (SeekBar) v.findViewById(R.id.media_controller_progress);
-        SeekBar seeker = (SeekBar) mProgress;
-        seeker.setOnSeekBarChangeListener(mSeekListener);
+        mProgress = (SeekBar) findViewById(R.id.media_controller_progress);
+        mProgress.setOnSeekBarChangeListener(mSeekListener);
         mProgress.setMax(1000);
 
-        mEndTime = (TextView) v.findViewById(R.id.media_controller_time);
-        mCurrentTime = (TextView) v.findViewById(R.id.media_controller_time_current);
+        mEndTime = (TextView)findViewById(R.id.media_controller_time);
+        mCurrentTime = (TextView) findViewById(R.id.media_controller_time_current);
         mFormatBuilder = new StringBuilder();
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
-
-
-        VideoTouchRoot touchRoot = (VideoTouchRoot) v.findViewById(R.id.media_controller_touch_root);
-        touchRoot.setOnTouchReceiver(this);
-
-        bottomControlsRoot = v.findViewById(R.id.media_controller_bottom_area);
-        bottomControlsRoot.setVisibility(View.INVISIBLE);
-
-        controlsRoot = v.findViewById(R.id.media_controller_controls_root);
-        controlsRoot.setVisibility(View.INVISIBLE);
-        controlsRoot.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (mShowing) {
-                    hide();
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        loadingView = (ProgressBar) v.findViewById(R.id.media_controller_loading_view);
-    }
-
-    /**
-     * Called by ViewTouchRoot on user touches,
-     * so we can avoid hiding the ui while the user is interacting.
-     */
-    @Override
-    public void onControllerUiTouched() {
-        if (mShowing) {
-            Log.d(TAG, "controller ui touch received!");
-            show();
-        }
     }
 
     /**
@@ -199,7 +140,8 @@ public final class PlayerController extends FrameLayout implements VideoTouchRoo
      */
     @Override
     public void show(final int timeInMilliSeconds) {
-        if (!mShowing && mAnchor != null) {
+        if (!mShowing) {
+            showBottomArea();
             setProgress();
             if (mPauseButton != null) {
                 mPauseButton.requestFocus();
@@ -227,12 +169,12 @@ public final class PlayerController extends FrameLayout implements VideoTouchRoo
 
     }
 
-    public boolean isShowing() {
-        return mShowing;
+    private void showBottomArea(){
+        bottomControlsArea.setVisibility(View.VISIBLE);
     }
 
-    public boolean isLoading() {
-        return mLoading;
+    public boolean isShowing() {
+        return mShowing;
     }
 
     public boolean isFirstTimeLoading() {
@@ -244,10 +186,6 @@ public final class PlayerController extends FrameLayout implements VideoTouchRoo
      */
     @Override
     public void hide() {
-        if (mAnchor == null) {
-            return;
-        }
-
         if (mShowing) {
             try {
                 mHandler.removeMessages(SHOW_PROGRESS);
@@ -261,32 +199,6 @@ public final class PlayerController extends FrameLayout implements VideoTouchRoo
             visibilityListener.onControlsVisibilityChange(false);
         }
     }
-
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(final Message msg) {
-            int pos;
-            switch (msg.what) {
-                case FADE_OUT:
-                    if (mPlayer.isPlaying()) {
-                        hide();
-                    } else {
-                        // re-schedule to check again
-                        Message fadeMessage = obtainMessage(FADE_OUT);
-                        removeMessages(FADE_OUT);
-                        sendMessageDelayed(fadeMessage, DEFAULT_TIMEOUT);
-                    }
-                    break;
-                case SHOW_PROGRESS:
-                    pos = setProgress();
-                    if (!mDragging && mShowing && mPlayer.isPlaying()) {
-                        final Message message = obtainMessage(SHOW_PROGRESS);
-                        sendMessageDelayed(message, 1000 - (pos % 1000));
-                    }
-                    break;
-            }
-        }
-    };
 
     private String stringForTime(final int timeMs) {
         int totalSeconds = timeMs / 1000;
@@ -303,22 +215,19 @@ public final class PlayerController extends FrameLayout implements VideoTouchRoo
         }
     }
 
-    //buffer variable to throttle event propagation
-    private int lastPlayedSeconds = -1;
-
     private int setProgress() {
-        if (mPlayer == null || mDragging) {
+        if (mFensterPlayer == null || mDragging) {
             return 0;
         }
-        int position = mPlayer.getCurrentPosition();
-        int duration = mPlayer.getDuration();
+        int position = mFensterPlayer.getCurrentPosition();
+        int duration = mFensterPlayer.getDuration();
         if (mProgress != null) {
             if (duration > 0) {
                 // use long to avoid overflow
                 long pos = 1000L * position / duration;
                 mProgress.setProgress((int) pos);
             }
-            int percent = mPlayer.getBufferPercentage();
+            int percent = mFensterPlayer.getBufferPercentage();
             mProgress.setSecondaryProgress(percent * 10);
         }
 
@@ -358,16 +267,16 @@ public final class PlayerController extends FrameLayout implements VideoTouchRoo
             }
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY) {
-            if (uniqueDown && !mPlayer.isPlaying()) {
-                mPlayer.start();
+            if (uniqueDown && !mFensterPlayer.isPlaying()) {
+                mFensterPlayer.start();
                 updatePausePlay();
                 show(DEFAULT_TIMEOUT);
             }
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_MEDIA_STOP
                 || keyCode == KeyEvent.KEYCODE_MEDIA_PAUSE) {
-            if (uniqueDown && mPlayer.isPlaying()) {
-                mPlayer.pause();
+            if (uniqueDown && mFensterPlayer.isPlaying()) {
+                mFensterPlayer.pause();
                 updatePausePlay();
                 show(DEFAULT_TIMEOUT);
             }
@@ -390,11 +299,11 @@ public final class PlayerController extends FrameLayout implements VideoTouchRoo
     }
 
     private void updatePausePlay() {
-        if (mRoot == null || mPauseButton == null) {
+        if (mPauseButton == null) {
             return;
         }
 
-        if (mPlayer.isPlaying()) {
+        if (mFensterPlayer.isPlaying()) {
             mPauseButton.setImageResource(android.R.drawable.ic_media_pause);
         } else {
             mPauseButton.setImageResource(android.R.drawable.ic_media_play);
@@ -402,13 +311,51 @@ public final class PlayerController extends FrameLayout implements VideoTouchRoo
     }
 
     private void doPauseResume() {
-        if (mPlayer.isPlaying()) {
-            mPlayer.pause();
+        if (mFensterPlayer.isPlaying()) {
+            mFensterPlayer.pause();
         } else {
-            mPlayer.start();
+            mFensterPlayer.start();
         }
         updatePausePlay();
     }
+
+    @Override
+    public void setEnabled(final boolean enabled) {
+
+        if (mPauseButton != null) {
+            mPauseButton.setEnabled(enabled);
+        }
+
+        if (mNextButton != null) {
+            mNextButton.setEnabled(enabled);
+        }
+        if (mPrevButton != null) {
+            mPrevButton.setEnabled(enabled);
+        }
+        if (mProgress != null) {
+            mProgress.setEnabled(enabled);
+        }
+        super.setEnabled(enabled);
+    }
+
+    @Override
+    public void onInitializeAccessibilityEvent(final AccessibilityEvent event) {
+        super.onInitializeAccessibilityEvent(event);
+        event.setClassName(MediaFensterPlayerController.class.getName());
+    }
+
+    @Override
+    public void onInitializeAccessibilityNodeInfo(final AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
+        info.setClassName(MediaFensterPlayerController.class.getName());
+    }
+
+    private final OnClickListener mPauseListener = new OnClickListener() {
+        public void onClick(final View v) {
+            doPauseResume();
+            show(DEFAULT_TIMEOUT);
+        }
+    };
 
     // There are two scenarios that can trigger the seekbar listener to trigger:
     //
@@ -436,15 +383,15 @@ public final class PlayerController extends FrameLayout implements VideoTouchRoo
         }
 
         public void onProgressChanged(final SeekBar bar, final int progress, final boolean fromuser) {
-            if (!fromuser) {
+            if (!fromuser && !mManualDragging) {
                 // We're not interested in programmatically generated changes to
                 // the progress bar's position.
                 return;
             }
 
-            long duration = mPlayer.getDuration();
+            long duration = mFensterPlayer.getDuration();
             long newposition = (duration * progress) / 1000L;
-            mPlayer.seekTo((int) newposition);
+            mFensterPlayer.seekTo((int) newposition);
             if (mCurrentTime != null) {
                 mCurrentTime.setText(stringForTime((int) newposition));
             }
@@ -463,100 +410,95 @@ public final class PlayerController extends FrameLayout implements VideoTouchRoo
         }
     };
 
-    @Override
-    public void setEnabled(final boolean enabled) {
-
-        if (mPauseButton != null) {
-            mPauseButton.setEnabled(enabled);
-        }
-
-        if (mNextButton != null) {
-            mNextButton.setEnabled(enabled);
-        }
-        if (mPrevButton != null) {
-            mPrevButton.setEnabled(enabled);
-        }
-        if (mProgress != null) {
-            mProgress.setEnabled(enabled);
-        }
-        super.setEnabled(enabled);
-    }
-
-    @Override
-    public void onInitializeAccessibilityEvent(final AccessibilityEvent event) {
-        super.onInitializeAccessibilityEvent(event);
-        event.setClassName(PlayerController.class.getName());
-    }
-
-    @Override
-    public void onInitializeAccessibilityNodeInfo(final AccessibilityNodeInfo info) {
-        super.onInitializeAccessibilityNodeInfo(info);
-        info.setClassName(PlayerController.class.getName());
-    }
-
-    private final OnClickListener mPauseListener = new OnClickListener() {
-        public void onClick(final View v) {
-            doPauseResume();
-            show(DEFAULT_TIMEOUT);
-        }
-    };
-
-    private final OnClickListener previousTrackListener = new OnClickListener() {
+    private final Handler mHandler = new Handler() {
         @Override
-        public void onClick(final View v) {
-            if (navigationListener != null) {
-                navigationListener.onPreviousSelected();
-            }
-        }
-    };
-
-    private final OnClickListener nextTrackListener = new OnClickListener() {
-        @Override
-        public void onClick(final View v) {
-            if (navigationListener != null) {
-                navigationListener.onNextSelected();
+        public void handleMessage(final Message msg) {
+            int pos;
+            switch (msg.what) {
+                case FADE_OUT:
+                    if (mFensterPlayer.isPlaying()) {
+                        hide();
+                    } else {
+                        // re-schedule to check again
+                        Message fadeMessage = obtainMessage(FADE_OUT);
+                        removeMessages(FADE_OUT);
+                        sendMessageDelayed(fadeMessage, DEFAULT_TIMEOUT);
+                    }
+                    break;
+                case SHOW_PROGRESS:
+                    pos = setProgress();
+                    if (!mDragging && mShowing && mFensterPlayer.isPlaying()) {
+                        final Message message = obtainMessage(SHOW_PROGRESS);
+                        sendMessageDelayed(message, 1000 - (pos % 1000));
+                    }
+                    break;
             }
         }
     };
 
     @Override
-    public void onFirstVideoFrameRendered() {
-        controlsRoot.setVisibility(View.VISIBLE);
-        bottomControlsRoot.setVisibility(View.VISIBLE);
-        mFirstTimeLoading = false;
+    public void onTap() {
+        Log.i(TAG, "Single Tap Up");
     }
 
     @Override
-    public void onPlay() {
-        hideLoadingView();
+    public void onHorizontalScroll(MotionEvent event, float delta) {
+        updateVideoProgressBar(delta);
     }
 
     @Override
-    public void onBuffer() {
-        showLoadingView();
+    public void onVerticalScroll(MotionEvent event, float scale) {
+
     }
 
     @Override
-    public boolean onStopWithExternalError(int position) {
-        return false;
+    public void onSwipeRight() {
+
     }
 
-    private void hideLoadingView() {
-        hide();
-        loadingView.setVisibility(View.GONE);
+    @Override
+    public void onSwipeLeft() {
 
-        mLoading = false;
     }
 
-    private void showLoadingView() {
-        mLoading = true;
-        loadingView.setVisibility(View.VISIBLE);
+    @Override
+    public void onSwipeBottom() {
+
     }
 
-    public interface NavigationListener {
-        void onNextSelected();
+    @Override
+    public void onSwipeTop() {
 
-        void onPreviousSelected();
+    }
+
+    private void updateVideoProgressBar(float delta) {
+        mSeekListener.onProgressChanged(mProgress, extractHorizontalDeltaScale(delta, mProgress), true);
+    }
+
+    private int extractHorizontalDeltaScale(float deltaX, SeekBar seekbar) {
+        return extractDeltaScale(getWidth(), deltaX, seekbar);
+    }
+
+    private int extractVerticalDeltaScale(float deltaY, SeekBar seekbar) {
+        return extractDeltaScale(getHeight(), deltaY, seekbar);
+    }
+
+    private int extractDeltaScale(int availableSpace, float deltaX, SeekBar seekbar){
+        int x = (int) deltaX;
+        float scale;
+        float progress = seekbar.getProgress();
+        final int max = seekbar.getMax();
+
+
+        if (x < 0) {
+            scale = (float) (x) / (float) (max - availableSpace) ;
+            progress = progress - (scale * progress);
+        } else {
+            scale = (float) (x) / (float) availableSpace;
+            progress += scale * max;
+        }
+
+        return (int) progress;
     }
 
 }

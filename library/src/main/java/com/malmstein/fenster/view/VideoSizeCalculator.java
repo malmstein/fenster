@@ -1,4 +1,4 @@
-package com.malmstein.fenster;
+package com.malmstein.fenster.view;
 
 import android.view.SurfaceHolder;
 import android.view.View;

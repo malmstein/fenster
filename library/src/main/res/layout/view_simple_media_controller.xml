@@ -1,39 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/media_controller_root"
+<com.malmstein.fenster.view.FensterTouchRoot xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/media_controller_touch_root"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:orientation="vertical"
-  android:layout_gravity="bottom"
-  android:fitsSystemWindows="true"
-  android:gravity="bottom">
+  android:background="@color/default_bg">
 
-  <com.malmstein.fenster.gestures.FensterGestureControllerView
-    android:id="@+id/media_controller_gestures_area"
+  <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_above="@+id/media_controller_bottom_root"/>
-
-  <LinearLayout
-    android:id="@+id/media_controller_bottom_root"
-    android:layout_alignParentBottom="true"
-    android:visibility="gone"
-    android:background="@color/default_bg"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="@dimen/padding_small"
-    android:paddingBottom="@dimen/padding_small"
-    android:paddingLeft="@dimen/padding_small"
-    android:paddingRight="@dimen/padding_extra_large"
     android:orientation="vertical">
 
     <LinearLayout
       android:id="@+id/media_controller_bottom_area"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
       android:orientation="horizontal"
-      android:gravity="center">
+      android:layout_marginBottom="@dimen/media_controller_bottom_margin"
+      android:gravity="top">
 
       <TextView
         android:id="@+id/media_controller_time_current"
@@ -57,11 +42,12 @@
 
     </LinearLayout>
 
+
     <LinearLayout
-      android:id="@+id/media_controller_controls"
+      android:id="@+id/media_controller_controls_root"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
+      android:layout_height="match_parent"
+      android:layout_above="@+id/media_controller_bottom_area"
       android:gravity="center"
       android:orientation="horizontal">
 
@@ -81,7 +67,14 @@
 
     </LinearLayout>
 
-  </LinearLayout>
+    <ProgressBar
+      android:id="@+id/media_controller_loading_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignTop="@id/media_controller_controls_root"
+      android:layout_alignBottom="@id/media_controller_controls_root"
+      android:layout_centerInParent="true" />
 
-</RelativeLayout>
+  </RelativeLayout>
 
+</com.malmstein.fenster.view.FensterTouchRoot>

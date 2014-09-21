@@ -1,6 +1,6 @@
-package com.malmstein.fenster;
+package com.malmstein.fenster.play;
 
-public interface Player {
+public interface FensterPlayer {
     void start();
 
     void pause();
