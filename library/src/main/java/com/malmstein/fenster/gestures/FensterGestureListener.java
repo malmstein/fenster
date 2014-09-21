@@ -58,7 +58,6 @@ public class FensterGestureListener implements GestureDetector.OnGestureListener
                 }
             }
         }
-
         return false;
     }
 
@@ -93,7 +92,6 @@ public class FensterGestureListener implements GestureDetector.OnGestureListener
         }
         return result;
     }
-
 
     @Override
     public void onShowPress(MotionEvent e) {

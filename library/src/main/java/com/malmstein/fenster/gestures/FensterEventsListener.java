@@ -17,4 +17,5 @@ public interface FensterEventsListener {
     void onSwipeBottom();
 
     void onSwipeTop();
+
 }

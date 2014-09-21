@@ -489,12 +489,12 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
         float progress = seekbar.getProgress();
         final int max = seekbar.getMax();
 
-        scale = (float) (x) / (float) availableSpace;
 
         if (x < 0) {
-            progress = 0;
-            progress = progress - (scale * max);
+            scale = (float) (x) / (float) (max - availableSpace) ;
+            progress = progress - (scale * progress);
         } else {
+            scale = (float) (x) / (float) availableSpace;
             progress += scale * max;
         }
 
