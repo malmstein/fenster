@@ -24,7 +24,7 @@ buildscript {
 }
 ```
 
-Displaying a video
+Displaying a video with custom controller
 =============================
 
 ### Add a TextureVideoView and a PlayerController to your Activity or Fragment
@@ -37,17 +37,18 @@ Displaying a video
   android:background="@color/default_bg"
   tools:context=".DemoActivity">
 
-  <com.malmstein.fenster.view.TextureVideoView
+  <com.malmstein.fenster.view.FensterVideoView
     android:id="@+id/play_video_texture"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:keepScreenOn="true"
-    android:gravity="center" />
+    android:fitsSystemWindows="true" />
 
-  <com.malmstein.fenster.PlayerController
+  <com.malmstein.fenster.controller.SimpleMediaFensterPlayerController
     android:id="@+id/play_video_controller"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
     android:animateLayoutChanges="true"
     android:fitsSystemWindows="true" />
 
@@ -83,6 +84,67 @@ by the controller. The `VisibilityListener` will be triggered when the `PlayerCo
 ```java
 playerController.setNavigationListener(this);
 playerController.setVisibilityListener(this);
+```
+
+Using the Gesture Detection Player Controller
+=============================
+
+### Attach a listener to your player controller
+
+As described in this blog post http://www.malmstein.com/how-to-use-a-textureview-to-display-a-video-with-custom-media-player-controls/
+it's very simple to use. Just add a listener to Player Controller
+
+```java
+playerController.setFensterEventsListener(this);
+```
+
+The Fenster Events Listener allows you to react to the gestures
+
+```java
+public interface FensterEventsListener {
+
+    void onTap();
+
+    void onHorizontalScroll(MotionEvent event, float delta);
+
+    void onVerticalScroll(MotionEvent event, float delta);
+
+    void onSwipeRight();
+
+    void onSwipeLeft();
+
+    void onSwipeBottom();
+
+    void onSwipeTop();
+}
+```
+
+### Use MediaPlayerController instead of SimpleMediaPlayerController
+
+```xml
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/default_bg"
+  tools:context=".DemoActivity">
+
+  <com.malmstein.fenster.view.FensterVideoView
+    android:id="@+id/play_video_texture"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    android:fitsSystemWindows="true" />
+
+  <com.malmstein.fenster.controller.SimpleMediaFensterPlayerController
+    android:id="@+id/play_video_controller"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:animateLayoutChanges="true"
+    android:fitsSystemWindows="true" />
+
+</FrameLayout>
 ```
 
 License
