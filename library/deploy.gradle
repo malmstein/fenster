@@ -1,0 +1,53 @@
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+uploadArchives {
+    configuration = configurations.archives
+    repositories {
+        if (isDevBuild) {
+            mavenLocal()
+        } else {
+            mavenDeployer {
+
+                if (isReleaseBuild) {
+                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                }
+
+                repository(url: sonatypeRepositoryUrl) {
+                    authentication(userName: sonatypeUsername,
+                            password: sonatypePassword)
+                }
+
+                pom.project {
+                    artifactId 'fenster'
+                    name 'Fenster'
+                    description 'Fenster is a library that helps displaying video with custom media player controls'
+                    packaging 'aar'
+                    url 'https://github.com/malmstein/fenster'
+                    inceptionYear '2014'
+
+                    scm {
+                        url 'https://github.com/malmstein/fenster'
+                        connection 'scm:https://github.com/malmstein/fenster.git'
+                        developerConnection 'scm:git@github.com:malmstein/fenster.git'
+                    }
+
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'malmstein'
+                            name 'David Gonzalez'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
