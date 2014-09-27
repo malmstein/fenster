@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.util.AttributeSet;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.SeekBar;
 
 public class VolumeSeekBar extends SeekBar {
@@ -29,6 +31,18 @@ public class VolumeSeekBar extends SeekBar {
 
     public VolumeSeekBar(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+    }
+
+    @Override
+    public void onInitializeAccessibilityEvent(final AccessibilityEvent event) {
+        super.onInitializeAccessibilityEvent(event);
+        event.setClassName(VolumeSeekBar.class.getName());
+    }
+
+    @Override
+    public void onInitializeAccessibilityNodeInfo(final AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
+        info.setClassName(VolumeSeekBar.class.getName());
     }
 
     @Override
