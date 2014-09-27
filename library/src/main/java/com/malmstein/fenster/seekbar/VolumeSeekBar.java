@@ -88,7 +88,7 @@ public class VolumeSeekBar extends SeekBar {
         void onVolumeFinishedDragging();
     }
 
-    private final OnSeekBarChangeListener volumeSeekListener = new OnSeekBarChangeListener() {
+    public final OnSeekBarChangeListener volumeSeekListener = new OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int vol, boolean fromUser) {
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, vol, 0);
