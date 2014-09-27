@@ -55,6 +55,12 @@
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
+      <com.malmstein.fenster.seekbar.VolumeSeekBar
+        android:id="@+id/media_controller_volume"
+        android:layout_width="0dip"
+        android:layout_height="@dimen/media_controller_seekbar_height"
+        android:layout_weight="4"/>
+
     </LinearLayout>
 
     <LinearLayout
@@ -67,8 +73,7 @@
 
       <ImageButton
         android:id="@+id/media_controller_previous"
-        style="@style/MediaButton.Previous"
-        android:contentDescription="Previous Piece" />
+        style="@style/MediaButton.Previous" />
 
       <ImageButton
         android:id="@+id/media_controller_pause"
@@ -77,7 +82,7 @@
       <ImageButton
         android:id="@+id/media_controller_next"
         style="@style/MediaButton.Next"
-        android:contentDescription="Next Piece" />
+        android:contentDescription="Next" />
 
     </LinearLayout>
 

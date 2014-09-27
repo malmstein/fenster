@@ -1,6 +1,7 @@
 package com.malmstein.fenster.controller;
 
 import android.content.Context;
+import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -20,6 +21,7 @@ import com.malmstein.fenster.R;
 import com.malmstein.fenster.gestures.FensterEventsListener;
 import com.malmstein.fenster.gestures.FensterGestureControllerView;
 import com.malmstein.fenster.play.FensterPlayer;
+import com.malmstein.fenster.seekbar.VolumeSeekBar;
 
 import java.util.Formatter;
 import java.util.Locale;
@@ -33,7 +35,7 @@ import java.util.Locale;
  * It's actually a view currently, as is the android MediaController.
  * (which is a bit odd and should be subject to change.)
  */
-public final class MediaFensterPlayerController extends RelativeLayout implements FensterPlayerController, FensterEventsListener {
+public final class MediaFensterPlayerController extends RelativeLayout implements FensterPlayerController, FensterEventsListener, VolumeSeekBar.Listener {
 
     /**
      * Called to notify that the control have been made visible or hidden.
@@ -64,6 +66,7 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
     private FensterGestureControllerView gestureControllerView;
     private View bottomControlsArea;
     private SeekBar mProgress;
+    private VolumeSeekBar mVolume;
     private TextView mEndTime;
     private TextView mCurrentTime;
     private ImageButton mPauseButton;
@@ -115,6 +118,9 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
         mProgress = (SeekBar) findViewById(R.id.media_controller_progress);
         mProgress.setOnSeekBarChangeListener(mSeekListener);
         mProgress.setMax(1000);
+
+        mVolume = (VolumeSeekBar) findViewById(R.id.media_controller_volume);
+        mVolume.initialize((AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE), this);
 
         mEndTime = (TextView)findViewById(R.id.media_controller_time);
         mCurrentTime = (TextView) findViewById(R.id.media_controller_time_current);
@@ -471,6 +477,16 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
 
     }
 
+    @Override
+    public void onVolumeStartedDragging() {
+        mDragging = true;
+    }
+
+    @Override
+    public void onVolumeFinishedDragging() {
+        mDragging = false;
+    }
+
     private void updateVideoProgressBar(float delta) {
         mSeekListener.onProgressChanged(mProgress, extractHorizontalDeltaScale(delta, mProgress), true);
     }
@@ -500,5 +516,6 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
 
         return (int) progress;
     }
+
 
 }

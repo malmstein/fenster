@@ -43,7 +43,7 @@ public class VolumeSeekBar extends SeekBar {
         super.onDetachedFromWindow();
     }
 
-    public void init(final AudioManager audioManager, final Listener volumeListener) {
+    public void initialize(final AudioManager audioManager, final Listener volumeListener) {
         this.audioManager = audioManager;
         this.volumeListener = volumeListener;
 
