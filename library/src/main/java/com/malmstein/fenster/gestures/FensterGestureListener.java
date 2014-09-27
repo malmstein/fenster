@@ -33,7 +33,6 @@ public class FensterGestureListener implements GestureDetector.OnGestureListener
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-
         Log.i(TAG, "Scroll");
 
         float deltaY = e2.getY() - e1.getY();

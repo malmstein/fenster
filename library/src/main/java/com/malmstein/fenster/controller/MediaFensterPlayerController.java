@@ -51,6 +51,7 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
 
     private static final int FADE_OUT = 1;
     private static final int SHOW_PROGRESS = 2;
+    public static final int ONE_FINGER = 1;
 
     private FensterPlayerControllerVisibilityListener visibilityListener;
     private FensterPlayer mFensterPlayer;
@@ -449,7 +450,11 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
 
     @Override
     public void onHorizontalScroll(MotionEvent event, float delta) {
-        updateVideoProgressBar(delta);
+        if (event.getPointerCount() == ONE_FINGER){
+            updateVideoProgressBar(delta);
+        } else {
+            updateVolumeProgressBar(delta);
+        }
     }
 
     @Override
@@ -485,6 +490,10 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
     @Override
     public void onVolumeFinishedDragging() {
         mDragging = false;
+    }
+
+    private void updateVolumeProgressBar(float delta){
+        mVolume.manuallyUpdateVolume(extractHorizontalDeltaScale(delta, mVolume));
     }
 
     private void updateVideoProgressBar(float delta) {

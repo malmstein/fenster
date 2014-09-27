@@ -49,22 +49,7 @@ public class VolumeSeekBar extends SeekBar {
 
         this.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
         this.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
-        this.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int vol, boolean fromUser) {
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, vol, 0);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                volumeListener.onVolumeStartedDragging();
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                volumeListener.onVolumeFinishedDragging();
-            }
-        });
+        this.setOnSeekBarChangeListener(volumeSeekListener);
     }
 
     private void updateVolumeProgress() {
@@ -79,10 +64,31 @@ public class VolumeSeekBar extends SeekBar {
         getContext().unregisterReceiver(volumeReceiver);
     }
 
+    public void manuallyUpdateVolume(int update) {
+        volumeSeekListener.onProgressChanged(this, update, true);
+    }
+
     public interface Listener {
         void onVolumeStartedDragging();
 
         void onVolumeFinishedDragging();
     }
+
+    private final OnSeekBarChangeListener volumeSeekListener = new OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int vol, boolean fromUser) {
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, vol, 0);
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+            volumeListener.onVolumeStartedDragging();
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            volumeListener.onVolumeFinishedDragging();
+        }
+    };
 
 }
