@@ -53,6 +53,9 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
     private static final int SHOW_PROGRESS = 2;
     public static final int ONE_FINGER = 1;
 
+    public static final int MAX_VIDEO_PROGRESS = 1000;
+    public static final int SKIP_VIDEO_PROGRESS = MAX_VIDEO_PROGRESS / 10;
+
     private FensterPlayerControllerVisibilityListener visibilityListener;
     private FensterPlayer mFensterPlayer;
 
@@ -118,7 +121,7 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
 
         mProgress = (SeekBar) findViewById(R.id.media_controller_progress);
         mProgress.setOnSeekBarChangeListener(mSeekListener);
-        mProgress.setMax(1000);
+        mProgress.setMax(MAX_VIDEO_PROGRESS);
 
         mVolume = (VolumeSeekBar) findViewById(R.id.media_controller_volume);
         mVolume.initialize((AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE), this);
@@ -467,12 +470,12 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
 
     @Override
     public void onSwipeRight() {
-
+        skipVideoForward();
     }
 
     @Override
     public void onSwipeLeft() {
-
+        skipVideoBackwards();
     }
 
     @Override
@@ -503,6 +506,14 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
         mSeekListener.onProgressChanged(mProgress, extractHorizontalDeltaScale(delta, mProgress), true);
     }
 
+    private void skipVideoForward(){
+        mSeekListener.onProgressChanged(mProgress, forwardSkippingUnit(), true);
+    }
+
+    private void skipVideoBackwards(){
+        mSeekListener.onProgressChanged(mProgress, backwardSkippingUnit(), true);
+    }
+
     private int extractHorizontalDeltaScale(float deltaX, SeekBar seekbar) {
         return extractDeltaScale(getWidth(), deltaX, seekbar);
     }
@@ -529,5 +540,12 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
         return (int) progress;
     }
 
+    private int forwardSkippingUnit(){
+        return mProgress.getProgress() + SKIP_VIDEO_PROGRESS;
+    }
+
+    private int backwardSkippingUnit(){
+        return mProgress.getProgress() - SKIP_VIDEO_PROGRESS;
+    }
 
 }
