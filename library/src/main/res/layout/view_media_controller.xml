@@ -59,7 +59,7 @@
         android:id="@+id/media_controller_volume"
         android:layout_width="0dip"
         android:layout_height="@dimen/media_controller_seekbar_height"
-        android:layout_weight="4"/>
+        android:layout_weight="3"/>
 
     </LinearLayout>
 

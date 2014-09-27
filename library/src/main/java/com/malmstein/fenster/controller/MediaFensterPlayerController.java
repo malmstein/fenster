@@ -342,6 +342,9 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
         if (mProgress != null) {
             mProgress.setEnabled(enabled);
         }
+        if (mVolume != null){
+            mVolume.setEnabled(enabled);
+        }
         super.setEnabled(enabled);
     }
 
