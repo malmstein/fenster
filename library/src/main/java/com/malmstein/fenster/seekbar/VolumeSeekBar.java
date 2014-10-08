@@ -12,6 +12,23 @@ import android.widget.SeekBar;
 
 public class VolumeSeekBar extends SeekBar {
 
+    public final OnSeekBarChangeListener volumeSeekListener = new OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int vol, boolean fromUser) {
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, vol, 0);
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+            volumeListener.onVolumeStartedDragging();
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            volumeListener.onVolumeFinishedDragging();
+        }
+    };
+
     private AudioManager audioManager;
     private Listener volumeListener;
     private BroadcastReceiver volumeReceiver = new BroadcastReceiver() {
@@ -87,22 +104,5 @@ public class VolumeSeekBar extends SeekBar {
 
         void onVolumeFinishedDragging();
     }
-
-    public final OnSeekBarChangeListener volumeSeekListener = new OnSeekBarChangeListener() {
-        @Override
-        public void onProgressChanged(SeekBar seekBar, int vol, boolean fromUser) {
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, vol, 0);
-        }
-
-        @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
-            volumeListener.onVolumeStartedDragging();
-        }
-
-        @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
-            volumeListener.onVolumeFinishedDragging();
-        }
-    };
 
 }
