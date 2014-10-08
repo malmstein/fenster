@@ -54,9 +54,10 @@ public class BrigthnessSeekBar extends SeekBar {
         info.setClassName(BrigthnessSeekBar.class.getName());
     }
 
-    public void initialize() {
+    public void initialize(Listener brightnessListener) {
         this.setMax(MAX_BRIGHTNESS);
         this.setOnSeekBarChangeListener(brightnessSeekListener);
+        this.brightnessListener = brightnessListener;
     }
 
     public void setBrightness(int brightness) {

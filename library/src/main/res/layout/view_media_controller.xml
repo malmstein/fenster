@@ -35,6 +35,12 @@
       android:orientation="horizontal"
       android:gravity="center">
 
+      <com.malmstein.fenster.seekbar.BrigthnessSeekBar
+        android:id="@+id/media_controller_brightness"
+        android:layout_width="0dip"
+        android:layout_height="@dimen/media_controller_seekbar_height"
+        android:layout_weight="3" />
+
       <TextView
         android:id="@+id/media_controller_time_current"
         style="@style/MediaText"

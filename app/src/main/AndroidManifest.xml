@@ -3,6 +3,7 @@
   package="com.malmstein.fenster.demo">
 
   <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
   <application
     android:allowBackup="true"
