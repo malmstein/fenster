@@ -1,7 +1,6 @@
 package com.malmstein.fenster.controller;
 
 import android.content.Context;
-import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -203,7 +202,7 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
         mProgress.setMax(MAX_VIDEO_PROGRESS);
 
         mVolume = (VolumeSeekBar) findViewById(R.id.media_controller_volume);
-        mVolume.initialize((AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE), this);
+        mVolume.initialize(this);
 
         mBrightness = (BrigthnessSeekBar) findViewById(R.id.media_controller_brightness);
         mBrightness.initialize(this);

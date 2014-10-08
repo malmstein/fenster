@@ -74,8 +74,8 @@ public class VolumeSeekBar extends SeekBar {
         super.onDetachedFromWindow();
     }
 
-    public void initialize(final AudioManager audioManager, final Listener volumeListener) {
-        this.audioManager = audioManager;
+    public void initialize(final Listener volumeListener) {
+        this.audioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
         this.volumeListener = volumeListener;
 
         this.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
