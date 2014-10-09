@@ -202,10 +202,10 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
         mProgress.setMax(MAX_VIDEO_PROGRESS);
 
         mVolume = (VolumeSeekBar) findViewById(R.id.media_controller_volume);
-        mVolume.initialize(this);
+        mVolume.initialise(this);
 
         mBrightness = (BrigthnessSeekBar) findViewById(R.id.media_controller_brightness);
-        mBrightness.initialize(this);
+        mBrightness.initialise(this);
 
         mEndTime = (TextView) findViewById(R.id.media_controller_time);
         mCurrentTime = (TextView) findViewById(R.id.media_controller_time_current);
