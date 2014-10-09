@@ -74,7 +74,7 @@ public class VolumeSeekBar extends SeekBar {
         super.onDetachedFromWindow();
     }
 
-    public void initialize(final Listener volumeListener) {
+    public void initialise(final Listener volumeListener) {
         this.audioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
         this.volumeListener = volumeListener;
 

@@ -1,12 +1,12 @@
 package com.malmstein.fenster.seekbar;
 
-import android.content.ContentResolver;
 import android.content.Context;
-import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.SeekBar;
+
+import com.malmstein.fenster.helper.BrightnessHelper;
 
 public class BrigthnessSeekBar extends SeekBar {
 
@@ -54,24 +54,20 @@ public class BrigthnessSeekBar extends SeekBar {
         info.setClassName(BrigthnessSeekBar.class.getName());
     }
 
-    public void initialize(Listener brightnessListener) {
+    public void initialise(Listener brightnessListener) {
         this.setMax(MAX_BRIGHTNESS);
         this.setOnSeekBarChangeListener(brightnessSeekListener);
         this.brightnessListener = brightnessListener;
     }
 
     public void setBrightness(int brightness) {
-
-        //constrain the value of brightness
         if (brightness < MIN_BRIGHTNESS) {
             brightness = MIN_BRIGHTNESS;
         } else if (brightness > MAX_BRIGHTNESS) {
             brightness = MAX_BRIGHTNESS;
         }
 
-        ContentResolver cResolver = getContext().getContentResolver();
-        Settings.System.putInt(cResolver, Settings.System.SCREEN_BRIGHTNESS, brightness);
-
+        BrightnessHelper.setBrightness(getContext(), brightness);
     }
 
     public interface Listener {
