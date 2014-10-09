@@ -8,7 +8,7 @@ import android.widget.SeekBar;
 
 import com.malmstein.fenster.helper.BrightnessHelper;
 
-public class BrigthnessSeekBar extends SeekBar {
+public class BrightnessSeekBar extends SeekBar {
 
     public static final int MAX_BRIGHTNESS = 255;
     public static final int MIN_BRIGHTNESS = 0;
@@ -30,28 +30,28 @@ public class BrigthnessSeekBar extends SeekBar {
     };
     private Listener brightnessListener;
 
-    public BrigthnessSeekBar(Context context) {
+    public BrightnessSeekBar(Context context) {
         super(context);
     }
 
-    public BrigthnessSeekBar(Context context, AttributeSet attrs) {
+    public BrightnessSeekBar(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public BrigthnessSeekBar(Context context, AttributeSet attrs, int defStyle) {
+    public BrightnessSeekBar(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
     @Override
     public void onInitializeAccessibilityEvent(final AccessibilityEvent event) {
         super.onInitializeAccessibilityEvent(event);
-        event.setClassName(BrigthnessSeekBar.class.getName());
+        event.setClassName(BrightnessSeekBar.class.getName());
     }
 
     @Override
     public void onInitializeAccessibilityNodeInfo(final AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
-        info.setClassName(BrigthnessSeekBar.class.getName());
+        info.setClassName(BrightnessSeekBar.class.getName());
     }
 
     public void initialise(Listener brightnessListener) {
@@ -68,6 +68,10 @@ public class BrigthnessSeekBar extends SeekBar {
         }
 
         BrightnessHelper.setBrightness(getContext(), brightness);
+    }
+
+    public void manuallyUpdate(int update) {
+        brightnessSeekListener.onProgressChanged(this, update, true);
     }
 
     public interface Listener {

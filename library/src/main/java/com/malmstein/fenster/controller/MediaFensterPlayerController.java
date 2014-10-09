@@ -20,7 +20,7 @@ import com.malmstein.fenster.R;
 import com.malmstein.fenster.gestures.FensterEventsListener;
 import com.malmstein.fenster.gestures.FensterGestureControllerView;
 import com.malmstein.fenster.play.FensterPlayer;
-import com.malmstein.fenster.seekbar.BrigthnessSeekBar;
+import com.malmstein.fenster.seekbar.BrightnessSeekBar;
 import com.malmstein.fenster.seekbar.VolumeSeekBar;
 
 import java.util.Formatter;
@@ -35,7 +35,7 @@ import java.util.Locale;
  * It's actually a view currently, as is the android MediaController.
  * (which is a bit odd and should be subject to change.)
  */
-public final class MediaFensterPlayerController extends RelativeLayout implements FensterPlayerController, FensterEventsListener, VolumeSeekBar.Listener, BrigthnessSeekBar.Listener {
+public final class MediaFensterPlayerController extends RelativeLayout implements FensterPlayerController, FensterEventsListener, VolumeSeekBar.Listener, BrightnessSeekBar.Listener {
 
     /**
      * Called to notify that the control have been made visible or hidden.
@@ -95,7 +95,7 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
     private FensterGestureControllerView gestureControllerView;
     private View bottomControlsArea;
     private SeekBar mProgress;
-    private BrigthnessSeekBar mBrightness;
+    private BrightnessSeekBar mBrightness;
     private VolumeSeekBar mVolume;
     private TextView mEndTime;
     private TextView mCurrentTime;
@@ -204,7 +204,7 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
         mVolume = (VolumeSeekBar) findViewById(R.id.media_controller_volume);
         mVolume.initialise(this);
 
-        mBrightness = (BrigthnessSeekBar) findViewById(R.id.media_controller_brightness);
+        mBrightness = (BrightnessSeekBar) findViewById(R.id.media_controller_brightness);
         mBrightness.initialise(this);
 
         mEndTime = (TextView) findViewById(R.id.media_controller_time);
@@ -277,18 +277,21 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
      */
     @Override
     public void hide() {
-        if (mShowing) {
-            try {
-                mHandler.removeMessages(SHOW_PROGRESS);
-                setVisibility(View.INVISIBLE);
-            } catch (final IllegalArgumentException ex) {
-                Log.w("MediaController", "already removed");
+        if (!mDragging) {
+            if (mShowing) {
+                try {
+                    mHandler.removeMessages(SHOW_PROGRESS);
+                    setVisibility(View.INVISIBLE);
+                } catch (final IllegalArgumentException ex) {
+                    Log.w("MediaController", "already removed");
+                }
+                mShowing = false;
             }
-            mShowing = false;
+            if (visibilityListener != null) {
+                visibilityListener.onControlsVisibilityChange(false);
+            }
         }
-        if (visibilityListener != null) {
-            visibilityListener.onControlsVisibilityChange(false);
-        }
+
     }
 
     private String stringForTime(final int timeMs) {
@@ -412,11 +415,9 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
 
     @Override
     public void setEnabled(final boolean enabled) {
-
         if (mPauseButton != null) {
             mPauseButton.setEnabled(enabled);
         }
-
         if (mNextButton != null) {
             mNextButton.setEnabled(enabled);
         }
@@ -428,6 +429,9 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
         }
         if (mVolume != null) {
             mVolume.setEnabled(enabled);
+        }
+        if (mBrightness != null) {
+            mBrightness.setEnabled(enabled);
         }
         super.setEnabled(enabled);
     }
@@ -454,13 +458,21 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
         if (event.getPointerCount() == ONE_FINGER) {
             updateVideoProgressBar(delta);
         } else {
-            updateVolumeProgressBar(delta);
+            if (delta > 0) {
+                skipVideoForward();
+            } else {
+                skipVideoBackwards();
+            }
         }
     }
 
     @Override
     public void onVerticalScroll(MotionEvent event, float scale) {
-
+        if (event.getPointerCount() == ONE_FINGER) {
+            updateBrightnessProgressBar(scale);
+        } else {
+            updateVolumeProgressBar(scale);
+        }
     }
 
     @Override
@@ -504,7 +516,11 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
     }
 
     private void updateVolumeProgressBar(float delta) {
-        mVolume.manuallyUpdateVolume(extractHorizontalDeltaScale(delta, mVolume));
+        mVolume.manuallyUpdate(extractVerticalDeltaScale(delta, mVolume));
+    }
+
+    private void updateBrightnessProgressBar(float delta) {
+        mBrightness.manuallyUpdate(extractVerticalDeltaScale(delta , mBrightness));
     }
 
     private void updateVideoProgressBar(float delta) {

@@ -13,7 +13,7 @@
     android:id="@+id/media_controller_gestures_area"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_above="@+id/media_controller_bottom_root"/>
+    android:layout_above="@+id/media_controller_bottom_root" />
 
   <LinearLayout
     android:id="@+id/media_controller_bottom_root"
@@ -35,12 +35,6 @@
       android:orientation="horizontal"
       android:gravity="center">
 
-      <com.malmstein.fenster.seekbar.BrigthnessSeekBar
-        android:id="@+id/media_controller_brightness"
-        android:layout_width="0dip"
-        android:layout_height="@dimen/media_controller_seekbar_height"
-        android:layout_weight="3" />
-
       <TextView
         android:id="@+id/media_controller_time_current"
         style="@style/MediaText"
@@ -61,12 +55,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
-      <com.malmstein.fenster.seekbar.VolumeSeekBar
-        android:id="@+id/media_controller_volume"
-        android:layout_width="0dip"
-        android:layout_height="@dimen/media_controller_seekbar_height"
-        android:layout_weight="3"/>
-
     </LinearLayout>
 
     <LinearLayout
@@ -76,6 +64,12 @@
       android:layout_alignParentBottom="true"
       android:gravity="center"
       android:orientation="horizontal">
+
+      <com.malmstein.fenster.seekbar.BrightnessSeekBar
+        android:id="@+id/media_controller_brightness"
+        android:layout_width="0dip"
+        android:layout_height="@dimen/media_controller_seekbar_height"
+        android:layout_weight="3" />
 
       <ImageButton
         android:id="@+id/media_controller_previous"
@@ -89,6 +83,12 @@
         android:id="@+id/media_controller_next"
         style="@style/MediaButton.Next"
         android:contentDescription="Next" />
+
+      <com.malmstein.fenster.seekbar.VolumeSeekBar
+        android:id="@+id/media_controller_volume"
+        android:layout_width="0dip"
+        android:layout_height="@dimen/media_controller_seekbar_height"
+        android:layout_weight="3" />
 
     </LinearLayout>
 

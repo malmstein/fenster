@@ -95,7 +95,7 @@ public class VolumeSeekBar extends SeekBar {
         getContext().unregisterReceiver(volumeReceiver);
     }
 
-    public void manuallyUpdateVolume(int update) {
+    public void manuallyUpdate(int update) {
         volumeSeekListener.onProgressChanged(this, update, true);
     }
 
