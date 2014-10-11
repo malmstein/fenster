@@ -469,9 +469,9 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
     @Override
     public void onVerticalScroll(MotionEvent event, float scale) {
         if (event.getPointerCount() == ONE_FINGER) {
-            updateBrightnessProgressBar(scale);
-        } else {
             updateVolumeProgressBar(scale);
+        } else {
+            updateBrightnessProgressBar(scale);
         }
     }
 
@@ -520,7 +520,7 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
     }
 
     private void updateBrightnessProgressBar(float delta) {
-        mBrightness.manuallyUpdate(extractVerticalDeltaScale(delta , mBrightness));
+        mBrightness.manuallyUpdate((int) delta);
     }
 
     private void updateVideoProgressBar(float delta) {

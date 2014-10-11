@@ -16,6 +16,7 @@ public class BrightnessSeekBar extends SeekBar {
         @Override
         public void onProgressChanged(SeekBar seekBar, int brightness, boolean fromUser) {
             setBrightness(brightness);
+            setProgress(brightness);
         }
 
         @Override
