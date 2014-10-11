@@ -59,6 +59,7 @@ public class BrightnessSeekBar extends SeekBar {
         this.setMax(MAX_BRIGHTNESS);
         this.setOnSeekBarChangeListener(brightnessSeekListener);
         this.brightnessListener = brightnessListener;
+        manuallyUpdate(BrightnessHelper.getBrightness(getContext()));
     }
 
     public void setBrightness(int brightness) {

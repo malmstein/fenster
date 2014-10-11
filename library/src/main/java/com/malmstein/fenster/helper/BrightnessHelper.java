@@ -10,4 +10,13 @@ public class BrightnessHelper {
         ContentResolver cResolver = context.getContentResolver();
         Settings.System.putInt(cResolver, Settings.System.SCREEN_BRIGHTNESS, brightness);
     }
+
+    public static int getBrightness(Context context) {
+        ContentResolver cResolver = context.getContentResolver();
+        try {
+            return Settings.System.getInt(cResolver, Settings.System.SCREEN_BRIGHTNESS);
+        } catch (Settings.SettingNotFoundException e) {
+            return 0;
+        }
+    }
 }
