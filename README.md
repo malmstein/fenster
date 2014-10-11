@@ -44,7 +44,7 @@ Displaying a video with custom controller
     android:keepScreenOn="true"
     android:fitsSystemWindows="true" />
 
-  <com.malmstein.fenster.controller.SimpleMediaFensterPlayerController
+  <com.malmstein.fenster.controller.MediaFensterPlayerController
     android:id="@+id/play_video_controller"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -121,6 +121,9 @@ public interface FensterEventsListener {
 
 ### Use MediaPlayerController instead of SimpleMediaPlayerController
 
+MediaFensterPlayerController also shows volume and brightness controls, if you just want to use a simple media controller
+then the recommendation is to use SimpleMediaFensterPlayerController
+
 ```xml
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
@@ -147,6 +150,60 @@ public interface FensterEventsListener {
 </FrameLayout>
 ```
 
+### Using the Volume and Brightness Seekbar
+
+Add them to your layout:
+
+```xml
+  <com.malmstein.fenster.seekbar.BrightnessSeekBar
+    android:id="@+id/media_controller_volume"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
+```
+
+```xml
+  <com.malmstein.fenster.seekbar.VolumeSeekBar
+    android:id="@+id/media_controller_volume"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
+```
+
+Initialise them from your Fragment or Activity:
+
+```java
+mVolume = (VolumeSeekBar) findViewById(R.id.media_controller_volume);
+mVolume.initialise(this);
+
+mBrightness = (BrightnessSeekBar) findViewById(R.id.media_controller_brightness);
+mBrightness.initialise(this);
+
+```
+
+You'll get a callback when the seekbar is being dragged:
+
+```java
+@Override
+public void onVolumeStartedDragging() {
+    mDragging = true;
+}
+
+@Override
+public void onVolumeFinishedDragging() {
+    mDragging = false;
+}
+
+@Override
+public void onBrigthnessStartedDragging() {
+    mDragging = true;
+}
+
+@Override
+public void onBrightnessFinishedDragging() {
+    mDragging = false;
+}
+
+  ```
+  
 License
 -------
 
