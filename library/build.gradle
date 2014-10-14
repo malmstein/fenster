@@ -7,6 +7,16 @@ int versionMinor = 0
 int versionPatch = 1
 int versionBuild = 1 // bump for dogfood builds, public betas, etc.
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.13.2'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.6'
+    }
+}
+
 apply plugin: 'com.android.library'
 
 android {

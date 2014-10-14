@@ -1,0 +1,64 @@
+if (project.plugins.hasPlugin('com.android.library')) {
+    apply from: 'https://gist.githubusercontent.com/hal9002/691bbf3340dde3a4591d/raw' // Android plugin
+} else {
+    apply from: 'https://gist.githubusercontent.com/hal9002/810b1d3e841fd6160c5d/raw' // Java plugin
+}
+
+apply plugin: 'com.jfrog.bintray'
+
+def localReleaseDest = "${buildDir}/release"
+
+def getString(String propertyName) {
+    project.hasProperty(propertyName) ? project.getProperty(propertyName) : ''
+}
+
+def getBoolean(String propertyName) {
+    project.hasProperty(propertyName) ? Boolean.valueOf(project.getProperty(propertyName)) : true
+}
+
+bintray {
+    user = getString('BINTRAY_USER')
+    key = getString('BINTRAY_KEY')
+    publish = getBoolean('UPLOAD_AUTO_PUBLISH')
+
+    filesSpec {
+        from localReleaseDest
+        into "."
+        exclude '**/maven-metadata.*'
+    }
+
+    pkg {
+        repo = 'maven'
+        userOrg = 'novoda'
+        name = getString('UPLOAD_NAME')
+        desc = getString('UPLOAD_DESCRIPTION')
+        websiteUrl = getString('UPLOAD_WEBSITE')
+        issueTrackerUrl = getString('UPLOAD_ISSUE_TRACKER')
+        vcsUrl = getString('UPLOAD_REPOSITORY')
+
+        licenses = ['Apache-2.0']
+        version {
+            name = getString('UPLOAD_VERSION')
+        }
+    }
+}
+
+task publishReleaseToBintray(dependsOn: ['generateRelease', 'bintrayUpload'])
+bintrayUpload.mustRunAfter generateRelease
+publishReleaseToBintray.mustRunAfter bintrayUpload
+
+gradle.taskGraph.useFilter { task ->
+    shouldBeExecuted(task)
+}
+
+def shouldBeExecuted(def task) {
+    !isBintrayRelated(task) || shouldPublishToBintray()
+}
+
+def isBintrayRelated(def task) {
+    task.name.toLowerCase().contains('bintray')
+}
+
+def shouldPublishToBintray() {
+    getBoolean('MANUAL_PUBLISH')
+}

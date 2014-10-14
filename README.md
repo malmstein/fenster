@@ -201,8 +201,7 @@ public void onBrigthnessStartedDragging() {
 public void onBrightnessFinishedDragging() {
     mDragging = false;
 }
-
-  ```
+```
   
 License
 -------

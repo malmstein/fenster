@@ -1,0 +1,14 @@
+ext {
+    PUBLISH_GROUP_ID = 'com.malmstein'
+    PUBLISH_ARTIFACT_ID = 'fenster'
+    PUBLISH_VERSION = project.version
+
+    UPLOAD_NAME = PUBLISH_ARTIFACT_ID
+    UPLOAD_DESCRIPTION = 'A library to display videos in a TextureView using a custom MediaPlayer controller'
+    UPLOAD_WEBSITE = 'https://github.com/malmstein/fenster'
+    UPLOAD_ISSUE_TRACKER = "${UPLOAD_WEBSITE}/issues"
+    UPLOAD_REPOSITORY = "${UPLOAD_WEBSITE}.git"
+    UPLOAD_VERSION = PUBLISH_VERSION
+}
+
+apply from: 'team-props/bintray.gradle'
