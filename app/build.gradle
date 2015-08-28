@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        mavenCentral()
         jcenter()
     }
     dependencies {
@@ -7,10 +8,14 @@ buildscript {
     }
 }
 
+repositories {
+    jcenter()
+}
+
 apply plugin: 'com.android.application'
 
 dependencies {
-    compile project(':library')
+    compile 'com.malmstein:fenster:0.0.1'
 }
 
 android {
