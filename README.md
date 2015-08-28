@@ -5,7 +5,7 @@ A library to display videos in a `TextureView` using a custom `MediaPlayer` cont
 
 ![Demo gif](https://raw.githubusercontent.com/malmstein/Fenster/master/art/video_example.gif)
 
-Install (Available soon)
+Install
 =============================
 
 To get the current snapshot version:
@@ -13,13 +13,10 @@ To get the current snapshot version:
 ```groovy
 buildscript {
     repositories {
-        mavenCentral()
-        maven {
-            url "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
+        jcenter()
     }
     dependencies {
-        classpath 'com.malmstein:fenster:0.1-SNAPSHOT'
+        classpath 'com.malmstein:fenster:0.0.1'
     }
 }
 ```
