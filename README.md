@@ -8,6 +8,8 @@ A library to display videos in a `TextureView` using a custom `MediaPlayer` cont
 Install
 =============================
 
+[ ![Download](https://api.bintray.com/packages/malmstein/maven/fenster/images/download.svg) ](https://bintray.com/malmstein/maven/fenster/_latestVersion)
+
 To get the current snapshot version:
 
 ```groovy
