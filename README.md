@@ -13,14 +13,7 @@ Install
 To get the current snapshot version:
 
 ```groovy
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.malmstein:fenster:0.0.1'
-    }
-}
+compile 'com.malmstein:fenster:0.0.1'
 ```
 
 Displaying a video with custom controller
