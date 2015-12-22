@@ -390,7 +390,7 @@ public class FensterVideoView extends TextureView implements MediaController.Med
 
     private boolean allowErrorListenerToHandle(final int frameworkError, final int implError) {
         if (mOnErrorListener != null) {
-            mOnErrorListener.onError(mMediaPlayer, frameworkError, implError);
+            return mOnErrorListener.onError(mMediaPlayer, frameworkError, implError);
         }
 
         return false;
