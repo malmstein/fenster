@@ -15,7 +15,8 @@ repositories {
 apply plugin: 'com.android.application'
 
 dependencies {
-    compile 'com.malmstein:fenster:0.0.1'
+    compile project(":library")
+//    compile 'com.malmstein:fenster:0.0.1'
 }
 
 android {

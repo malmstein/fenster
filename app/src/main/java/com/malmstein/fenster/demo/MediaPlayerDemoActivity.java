@@ -20,6 +20,7 @@ public class MediaPlayerDemoActivity extends Activity implements View.OnClickLis
     private void bindViews() {
         findViewById(R.id.start_gesture_media_player_button).setOnClickListener(this);
         findViewById(R.id.start_simple_media_player_button).setOnClickListener(this);
+        findViewById(R.id.local_file_media_player_button).setOnClickListener(this);
     }
 
     @Override
@@ -30,6 +31,11 @@ public class MediaPlayerDemoActivity extends Activity implements View.OnClickLis
                 break;
             case R.id.start_simple_media_player_button:
                 startActivity(new Intent(this, SimpleMediaPlayerActivity.class));
+                break;
+            case R.id.local_file_media_player_button:
+                Intent localStream = new Intent(this, SimpleMediaPlayerActivity.class);
+                localStream.putExtra(SimpleMediaPlayerActivity.KEY_LOCAL_FILE, true);
+                startActivity(localStream);
                 break;
             default:
                 new Throwable("Bro I don't exist");

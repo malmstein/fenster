@@ -251,7 +251,7 @@ public class FensterVideoView extends TextureView implements MediaController.Med
     }
 
     private boolean notReadyForPlaybackJustYetWillTryAgainLater() {
-        return mUri == null || mSurfaceTexture == null;
+        return mSurfaceTexture == null;
     }
 
     private void tellTheMusicPlaybackServiceToPause() {

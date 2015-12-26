@@ -6,10 +6,10 @@
   android:padding="@dimen/activity_horizontal_margin">
 
   <TextView
-    android:id="@+id/demo_activity_label"
+    android:id="@+id/demo_activity_controller_description"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="@string/demo_activity_label"
+    android:text="@string/description_demo_activity_controller"
     android:gravity="center" />
 
   <Button
@@ -24,5 +24,20 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="@string/title_gesture_media_player"/>
+
+  <TextView
+    android:id="@+id/demo_activity_origin_description"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/activity_vertical_margin"
+    android:text="@string/description_demo_activity_origin"
+    android:gravity="center" />
+
+  <Button
+    android:id="@+id/local_file_media_player_button"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/activity_vertical_margin"
+    android:text="@string/title_local_media_player" />
 
 </LinearLayout>
