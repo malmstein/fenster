@@ -51,25 +51,6 @@ public class FensterVideoView extends TextureView implements MediaController.Med
     public static final String TAG = "TextureVideoView";
     public static final int VIDEO_BEGINNING = 0;
 
-    /**
-     * Notifies periodically about replay.
-     */
-    public interface ReplayListener {
-        /**
-         * Called periodically to notify that we are still playing.
-         * <p/>
-         * Used to check whether we are still permitted to watch.
-         */
-        void onStillPlaying();
-    }
-
-    private static final ReplayListener NULL_REPLAY_LISTENER = new ReplayListener() {
-        @Override
-        public void onStillPlaying() {
-            // no op
-        }
-    };
-
     // all possible internal states
     private static final int STATE_ERROR = -1;
     private static final int STATE_IDLE = 0;
@@ -79,7 +60,6 @@ public class FensterVideoView extends TextureView implements MediaController.Med
     private static final int STATE_PAUSED = 4;
     private static final int STATE_PLAYBACK_COMPLETED = 5;
     private static final int MILLIS_IN_SEC = 1000;
-    private static final long NOTIFY_REPLAY_INTERVAL_MILLIS = TimeUnit.MINUTES.toMillis(10);
 
     // collaborators / delegates / composites .. discuss
     private final VideoSizeCalculator videoSizeCalculator;
