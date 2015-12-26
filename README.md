@@ -201,6 +201,54 @@ public void onBrightnessFinishedDragging() {
     mDragging = false;
 }
 ```
+
+Support for different video origins
+=============================
+
+The `setVideo()` method allows you to load remote or local video files. You can also set the start time of the video 
+(useful if you want to resume content), passing in a integer which corresponds to Milliseconds.
+
+### Loading a remote stream
+
+
+```java
+@Override
+protected void onPostCreate(Bundle savedInstanceState) {
+    super.onPostCreate(savedInstanceState);
+
+    textureView = (TextureVideoView) findViewById(R.id.play_video_texture);
+    playerController = (PlayerController) findViewById(R.id.play_video_controller);
+
+    textureView.setMediaController(playerController);
+
+    textureView.setVideo("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4");
+    textureView.start();
+}
+```
+
+### Loading a local stream
+
+`Fenster` uses the [AssetFileDescriptor](http://developer.android.com/intl/es/reference/android/content/res/AssetFileDescriptor.html) in 
+order to load a local video stream.
+
+
+```java
+@Override
+protected void onPostCreate(Bundle savedInstanceState) {
+    super.onPostCreate(savedInstanceState);
+
+    textureView = (TextureVideoView) findViewById(R.id.play_video_texture);
+    playerController = (PlayerController) findViewById(R.id.play_video_controller);
+
+    textureView.setMediaController(playerController);
+    
+    AssetFileDescriptor assetFileDescriptor = getResources().openRawResourceFd(R.raw.big_buck_bunny);
+    textureView.setVideo(assetFileDescriptor);
+   
+    textureView.start();
+}
+```
+
   
 License
 -------
