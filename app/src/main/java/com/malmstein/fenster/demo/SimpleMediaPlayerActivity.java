@@ -1,6 +1,7 @@
 package com.malmstein.fenster.demo;
 
 import android.app.Activity;
+import android.content.res.AssetFileDescriptor;
 import android.os.Bundle;
 import android.view.View;
 
@@ -10,6 +11,7 @@ import com.malmstein.fenster.view.FensterVideoView;
 
 public class SimpleMediaPlayerActivity extends Activity implements FensterPlayerControllerVisibilityListener {
 
+    public static final String KEY_LOCAL_FILE = BuildConfig.APPLICATION_ID + "KEY_LOCAL_FILE";
     private FensterVideoView textureView;
     private SimpleMediaFensterPlayerController fullScreenMediaPlayerController;
 
@@ -26,8 +28,16 @@ public class SimpleMediaPlayerActivity extends Activity implements FensterPlayer
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        textureView.setVideo("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4",
-                SimpleMediaFensterPlayerController.DEFAULT_VIDEO_START);
+
+        boolean localFile = getIntent().getExtras().containsKey(KEY_LOCAL_FILE);
+
+        if (localFile) {
+            AssetFileDescriptor assetFileDescriptor = getResources().openRawResourceFd(R.raw.big_buck_bunny);
+            textureView.setVideo(assetFileDescriptor);
+        } else {
+            textureView.setVideo("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4");
+        }
+
         textureView.start();
     }
 

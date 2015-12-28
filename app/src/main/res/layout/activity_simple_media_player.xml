@@ -3,7 +3,7 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="@color/default_bg"
-  tools:context=".DemoActivity">
+  tools:context=".SimpleMediaPlayerActivity">
 
   <com.malmstein.fenster.view.FensterVideoView
     android:id="@+id/play_video_texture"

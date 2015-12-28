@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.SurfaceTexture;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -22,13 +23,12 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.MediaController;
 
 import com.malmstein.fenster.R;
-import com.malmstein.fenster.play.FensterPlayer;
 import com.malmstein.fenster.controller.FensterPlayerController;
+import com.malmstein.fenster.play.FensterPlayer;
 import com.malmstein.fenster.play.FensterVideoStateListener;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Displays a video file.  The VideoView class
@@ -51,25 +51,6 @@ public class FensterVideoView extends TextureView implements MediaController.Med
     public static final String TAG = "TextureVideoView";
     public static final int VIDEO_BEGINNING = 0;
 
-    /**
-     * Notifies periodically about replay.
-     */
-    public interface ReplayListener {
-        /**
-         * Called periodically to notify that we are still playing.
-         * <p/>
-         * Used to check whether we are still permitted to watch.
-         */
-        void onStillPlaying();
-    }
-
-    private static final ReplayListener NULL_REPLAY_LISTENER = new ReplayListener() {
-        @Override
-        public void onStillPlaying() {
-            // no op
-        }
-    };
-
     // all possible internal states
     private static final int STATE_ERROR = -1;
     private static final int STATE_IDLE = 0;
@@ -79,7 +60,6 @@ public class FensterVideoView extends TextureView implements MediaController.Med
     private static final int STATE_PAUSED = 4;
     private static final int STATE_PLAYBACK_COMPLETED = 5;
     private static final int MILLIS_IN_SEC = 1000;
-    private static final long NOTIFY_REPLAY_INTERVAL_MILLIS = TimeUnit.MINUTES.toMillis(10);
 
     // collaborators / delegates / composites .. discuss
     private final VideoSizeCalculator videoSizeCalculator;
@@ -93,6 +73,8 @@ public class FensterVideoView extends TextureView implements MediaController.Med
     private int mTargetState = STATE_IDLE;
     // settable by the client
     private Uri mUri;
+
+    private AssetFileDescriptor mAssetFileDescriptor;
 
     private Map<String, String> mHeaders;
     // All the stuff we need for playing and showing a video
@@ -159,15 +141,37 @@ public class FensterVideoView extends TextureView implements MediaController.Med
     }
 
     public void setVideoFromBeginning(final String path) {
+        disableFileDescriptor();
+        setVideo(Uri.parse(path), VIDEO_BEGINNING);
+    }
+
+    private void disableFileDescriptor() {
+        mAssetFileDescriptor = null;
+    }
+
+    public void setVideo(final String path) {
+        disableFileDescriptor();
         setVideo(Uri.parse(path), VIDEO_BEGINNING);
     }
 
     public void setVideo(final String url, final int seekInSeconds) {
-        setVideoURI(Uri.parse(url), null, seekInSeconds);
+        disableFileDescriptor();
+        setVideo(Uri.parse(url), seekInSeconds);
     }
 
     public void setVideo(final Uri uri, final int seekInSeconds) {
+        disableFileDescriptor();
         setVideoURI(uri, null, seekInSeconds);
+    }
+
+    public void setVideo(final AssetFileDescriptor assetFileDescriptor) {
+        mAssetFileDescriptor = assetFileDescriptor;
+        setVideoURI(null, null, VIDEO_BEGINNING);
+    }
+
+    public void setVideo(final AssetFileDescriptor assetFileDescriptor, final int seekInSeconds) {
+        mAssetFileDescriptor = assetFileDescriptor;
+        setVideoURI(null, null, seekInSeconds);
     }
 
     private void setVideoURI(final Uri uri, final Map<String, String> headers, final int seekInSeconds) {
@@ -218,7 +222,9 @@ public class FensterVideoView extends TextureView implements MediaController.Med
             mMediaPlayer.setOnInfoListener(mInfoListener);
             mMediaPlayer.setOnBufferingUpdateListener(mBufferingUpdateListener);
             mCurrentBufferPercentage = 0;
-            mMediaPlayer.setDataSource(getContext(), mUri, mHeaders);
+
+            setDataSource();
+
             mMediaPlayer.setSurface(new Surface(mSurfaceTexture));
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mMediaPlayer.setScreenOnWhilePlaying(true);
@@ -227,15 +233,25 @@ public class FensterVideoView extends TextureView implements MediaController.Med
             // we don't set the target state here either, but preserve the target state that was there before.
             mCurrentState = STATE_PREPARING;
             attachMediaController();
-        } catch (final IOException ex) {
-            notifyUnableToOpenContent(ex);
-        } catch (final IllegalArgumentException ex) {
+        } catch (final IOException | IllegalArgumentException ex) {
             notifyUnableToOpenContent(ex);
         }
     }
 
+    private void setDataSource() throws IOException {
+        if (mAssetFileDescriptor != null) {
+            mMediaPlayer.setDataSource(
+                    mAssetFileDescriptor.getFileDescriptor(),
+                    mAssetFileDescriptor.getStartOffset(),
+                    mAssetFileDescriptor.getLength()
+            );
+        } else {
+            mMediaPlayer.setDataSource(getContext(), mUri, mHeaders);
+        }
+    }
+
     private boolean notReadyForPlaybackJustYetWillTryAgainLater() {
-        return mUri == null || mSurfaceTexture == null;
+        return mSurfaceTexture == null;
     }
 
     private void tellTheMusicPlaybackServiceToPause() {
@@ -246,7 +262,7 @@ public class FensterVideoView extends TextureView implements MediaController.Med
     }
 
     private void notifyUnableToOpenContent(final Exception ex) {
-        Log.w("Unable to open content: " + mUri, ex);
+        Log.w("Unable to open content:" + mUri, ex);
         mCurrentState = STATE_ERROR;
         mTargetState = STATE_ERROR;
         mErrorListener.onError(mMediaPlayer, MediaPlayer.MEDIA_ERROR_UNKNOWN, 0);
@@ -410,7 +426,8 @@ public class FensterVideoView extends TextureView implements MediaController.Med
     private static AlertDialog createErrorDialog(final Context context, final OnCompletionListener completionListener, final MediaPlayer mediaPlayer, final int errorMessage) {
         return new AlertDialog.Builder(context)
                 .setMessage(errorMessage)
-                .setPositiveButton(android.R.string.ok,
+                .setPositiveButton(
+                        android.R.string.ok,
                         new DialogInterface.OnClickListener() {
                             public void onClick(final DialogInterface dialog, final int whichButton) {
                                     /* If we get here, there is no onError listener, so
@@ -745,6 +762,5 @@ public class FensterVideoView extends TextureView implements MediaController.Med
     public void setOnPlayStateListener(final FensterVideoStateListener onPlayStateListener) {
         this.onPlayStateListener = onPlayStateListener;
     }
-
 
 }
