@@ -1,0 +1,5 @@
+<resources>
+  <string name="fen__app_name">Fenster</string>
+  <string name="fen__play_error_message">Impossible to play the video.</string>
+  <string name="fen__play_progressive_error_message">Impossible to play the progressive video.</string>
+</resources>

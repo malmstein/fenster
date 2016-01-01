@@ -2,25 +2,24 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".GestureMediaPlayerActivity"
-  android:padding="@dimen/padding_medium">
+  android:padding="@dimen/fen__padding_medium">
 
   <com.malmstein.fenster.gestures.FensterGestureControllerView
-    android:id="@+id/play_gesture_controller"
+    android:id="@+id/fen__play_gesture_controller"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />
 
   <SeekBar
-    android:id="@+id/play_gesture_horizontal_seekbar"
+    android:id="@+id/fen__play_gesture_horizontal_seekbar"
     android:layout_width="match_parent"
     android:layout_centerInParent="true"
     android:max="1000"
-    android:layout_height="@dimen/media_controller_seekbar_height"/>
+    android:layout_height="@dimen/fen__media_controller_seekbar_height"/>
 
   <SeekBar
-    android:id="@+id/play_gesture_vertical_seekbar"
+    android:id="@+id/fen__play_gesture_vertical_seekbar"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/media_controller_seekbar_height"
+    android:layout_height="@dimen/fen__media_controller_seekbar_height"
     android:max="1000"
     android:rotation="90" />
 

@@ -476,7 +476,7 @@ public class FensterVideoView extends TextureView implements MediaController.Med
     }
 
     private static int getErrorMessage(final int frameworkError) {
-        int messageId = R.string.play_error_message;
+        int messageId = R.string.fen__play_error_message;
 
         if (frameworkError == MediaPlayer.MEDIA_ERROR_IO) {
             Log.e(TAG, "TextureVideoView error. File or network related operation errors.");
@@ -492,7 +492,7 @@ public class FensterVideoView extends TextureView implements MediaController.Med
             Log.e(TAG, "TextureVideoView error. Bitstream is conforming to the related coding standard or file spec, but the media framework does not support the feature.");
         } else if (frameworkError == MediaPlayer.MEDIA_ERROR_NOT_VALID_FOR_PROGRESSIVE_PLAYBACK) {
             Log.e(TAG, "TextureVideoView error. The video is streamed and its container is not valid for progressive playback i.e the video's index (e.g moov atom) is not at the start of the file.");
-            messageId = R.string.play_progressive_error_message;
+            messageId = R.string.fen__play_progressive_error_message;
         }
         return messageId;
     }

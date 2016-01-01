@@ -79,7 +79,7 @@ public final class SimpleMediaFensterPlayerController extends FrameLayout implem
 
     @Override
     protected void onFinishInflate() {
-        LayoutInflater.from(getContext()).inflate(R.layout.view_simple_media_controller, this);
+        LayoutInflater.from(getContext()).inflate(R.layout.fen__view_simple_media_controller, this);
         initControllerView();
     }
 
@@ -95,33 +95,33 @@ public final class SimpleMediaFensterPlayerController extends FrameLayout implem
     }
 
     private void initControllerView() {
-        mPauseButton = (ImageButton) findViewById(R.id.media_controller_pause);
+        mPauseButton = (ImageButton) findViewById(R.id.fen__media_controller_pause);
         mPauseButton.requestFocus();
         mPauseButton.setOnClickListener(mPauseListener);
 
-        mNextButton = (ImageButton) findViewById(R.id.media_controller_next);
-        mPrevButton = (ImageButton) findViewById(R.id.media_controller_previous);
+        mNextButton = (ImageButton) findViewById(R.id.fen__media_controller_next);
+        mPrevButton = (ImageButton) findViewById(R.id.fen__media_controller_previous);
 
-        mProgress = (SeekBar) findViewById(R.id.media_controller_progress);
+        mProgress = (SeekBar) findViewById(R.id.fen__media_controller_progress);
         SeekBar seeker = (SeekBar) mProgress;
         seeker.setOnSeekBarChangeListener(mSeekListener);
         mProgress.setMax(1000);
 
-        mEndTime = (TextView) findViewById(R.id.media_controller_time);
-        mCurrentTime = (TextView) findViewById(R.id.media_controller_time_current);
+        mEndTime = (TextView) findViewById(R.id.fen__media_controller_time);
+        mCurrentTime = (TextView) findViewById(R.id.fen__media_controller_time_current);
         mFormatBuilder = new StringBuilder();
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
 
         FensterTouchRoot touchRoot = (FensterTouchRoot) findViewById(R.id.media_controller_touch_root);
         touchRoot.setOnTouchReceiver(this);
 
-        bottomControlsRoot = findViewById(R.id.media_controller_bottom_area);
+        bottomControlsRoot = findViewById(R.id.fen__media_controller_bottom_area);
         bottomControlsRoot.setVisibility(View.INVISIBLE);
 
         controlsRoot = findViewById(R.id.media_controller_controls_root);
         controlsRoot.setVisibility(View.INVISIBLE);
 
-        loadingView = (ProgressBar) findViewById(R.id.media_controller_loading_view);
+        loadingView = (ProgressBar) findViewById(R.id.fen__media_controller_loading_view);
     }
 
 
