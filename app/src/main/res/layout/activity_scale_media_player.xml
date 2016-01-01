@@ -1,0 +1,30 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/default_bg"
+  android:gravity="center"
+  tools:context=".SimpleMediaPlayerActivity">
+
+  <RelativeLayout
+    android:layout_width="300dp"
+    android:layout_height="300dp">
+
+    <com.malmstein.fenster.view.FensterVideoView
+      android:id="@+id/play_video_texture"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      app:scaleType="crop" />
+
+    <com.malmstein.fenster.controller.SimpleMediaFensterPlayerController
+      android:id="@+id/play_video_controller"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:animateLayoutChanges="true" />
+
+  </RelativeLayout>
+
+
+</LinearLayout>

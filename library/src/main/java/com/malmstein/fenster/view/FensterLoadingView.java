@@ -19,6 +19,7 @@ public class FensterLoadingView extends FrameLayout {
 
     @Override
     protected void onFinishInflate() {
+        super.onFinishInflate();
         LayoutInflater.from(getContext()).inflate(R.layout.view_loading, this);
     }
 

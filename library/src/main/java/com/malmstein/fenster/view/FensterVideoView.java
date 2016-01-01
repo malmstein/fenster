@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
+import android.content.res.TypedArray;
 import android.graphics.SurfaceTexture;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -75,7 +76,7 @@ public class FensterVideoView extends TextureView implements MediaController.Med
     private int mCurrentState = STATE_IDLE;
     private int mTargetState = STATE_IDLE;
 
-    private ScaleType mScaleType = ScaleType.SCALE_TO_FIT;
+    private ScaleType mScaleType;
 
     private Uri mUri;
 
@@ -96,7 +97,6 @@ public class FensterVideoView extends TextureView implements MediaController.Med
     private boolean mCanSeekForward;
     private FensterVideoStateListener onPlayStateListener;
 
-
     private AlertDialog errorDialog;
 
     public FensterVideoView(final Context context, final AttributeSet attrs) {
@@ -105,8 +105,28 @@ public class FensterVideoView extends TextureView implements MediaController.Med
 
     public FensterVideoView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
+        applyCustomAttributes(context, attrs);
         videoSizeCalculator = new VideoSizeCalculator();
         initVideoView();
+    }
+
+    private void applyCustomAttributes(Context context, AttributeSet attrs) {
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.FensterVideoView);
+        if (typedArray == null) {
+            return;
+        }
+        int[] attrsValues = {R.attr.scaleType};
+        TypedArray scaleTypedArray = context.obtainStyledAttributes(attrs, attrsValues);
+        if (scaleTypedArray != null) {
+            try {
+                int scaleTypeId = typedArray.getInt(0, 0);
+                mScaleType = ScaleType.values()[scaleTypeId];
+            } finally {
+                typedArray.recycle();
+            }
+        } else {
+            mScaleType = ScaleType.SCALE_TO_FIT;
+        }
     }
 
     @Override
@@ -175,10 +195,11 @@ public class FensterVideoView extends TextureView implements MediaController.Med
 
     /**
      * Set the scale type of the video, needs to be set after setVideo() has been called
+     *
      * @param scaleType
      */
-    public void setScaleType(ScaleType scaleType) {
-        switch (scaleType){
+    private void setScaleType(ScaleType scaleType) {
+        switch (scaleType) {
             case SCALE_TO_FIT:
                 mMediaPlayer.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT);
                 break;
@@ -194,7 +215,6 @@ public class FensterVideoView extends TextureView implements MediaController.Med
         mHeaders = headers;
         mSeekWhenPrepared = seekInSeconds * 1000;
         openVideo();
-        setScaleType(mScaleType);
         requestLayout();
         invalidate();
     }
@@ -235,6 +255,7 @@ public class FensterVideoView extends TextureView implements MediaController.Med
             mCurrentBufferPercentage = 0;
 
             setDataSource();
+            setScaleType(mScaleType);
 
             mMediaPlayer.setSurface(new Surface(mSurfaceTexture));
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
