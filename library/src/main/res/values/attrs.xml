@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <attr name="colorForeground" />
+
+  <attr name="customLayout" format="reference" />
+
+  <attr name="timesTextFont" format="enum">
+    <enum name="none" value="-1" />
+    <enum name="flamaBold" value="0" />
+    <enum name="flamaExtraBold" value="1" />
+    <enum name="gillSansW01Light" value="2" />
+    <enum name="gillSansW01Book" value="3" />
+    <enum name="timesDigitalW04RegularSc" value="4" />
+    <enum name="timesDigitalW04Regular" value="5" />
+    <enum name="timesModernRegular" value="6" />
+    <enum name="timesModernLight" value="7" />
+    <enum name="timesModernBold" value="8" />
+    <enum name="timesModernBoldItalic" value="9" />
+    <enum name="timesModernMagazineRg" value="10" />
+    <enum name="timesModernMagazineBd" value="11" />
+    <enum name="timesModernMagazineLt" value="12" />
+    <enum name="gillSansW01Medium" value="13" />
+  </attr>
+
+  <attr name="appBarTitleTextFont" format="enum">
+    <enum name="none" value="-1" />
+    <enum name="flamaBold" value="0" />
+    <enum name="flamaExtraBold" value="1" />
+    <enum name="gillSansW01Light" value="2" />
+    <enum name="gillSansW01Book" value="3" />
+    <enum name="timesDigitalW04RegularSc" value="4" />
+    <enum name="timesDigitalW04Regular" value="5" />
+    <enum name="timesModernRegular" value="6" />
+    <enum name="timesModernLight" value="7" />
+    <enum name="timesModernBold" value="8" />
+    <enum name="timesModernBoldItalic" value="9" />
+    <enum name="timesModernMagazineRg" value="10" />
+    <enum name="timesModernMagazineBd" value="11" />
+    <enum name="timesModernMagazineLt" value="12" />
+    <enum name="gillSansW01Medium" value="13" />
+  </attr>
+
+  <declare-styleable name="AppBar">
+    <attr name="customLayout" />
+    <attr name="appBarBackground" format="reference" />
+    <attr name="appBarTitleTextSize" format="dimension" />
+    <attr name="appBarTitleTextColor" format="color" />
+    <attr name="appBarTitleTextFont" />
+  </declare-styleable>
+
+  <declare-styleable name="TimesTextView">
+    <attr name="timesTextFont" />
+  </declare-styleable>
+
+  <declare-styleable name="DropCapView">
+    <attr name="lineSpacingExtra" format="dimension" />
+    <attr name="dropCapTextSize" format="dimension" />
+    <attr name="dropCapTextColor" format="color" />
+
+    <attr name="copyTextSize" format="dimension" />
+    <attr name="copyTextColor" format="color" />
+
+    <attr name="timesTextFont" />
+  </declare-styleable>
+
+  <declare-styleable name="SliceDefaultView">
+    <attr name="customLayout" />
+  </declare-styleable>
+
+  <declare-styleable name="ArticleStatusBadge">
+    <attr name="articleStatusTint" format="color" />
+  </declare-styleable>
+
+  <declare-styleable name="ArticleStatusBadgeWithTime">
+    <attr name="wrapTime" format="boolean" />
+  </declare-styleable>
+
+  <declare-styleable name="LeadingArticleOneView">
+    <attr name="showHeader" format="boolean" />
+  </declare-styleable>
+
+</resources>
