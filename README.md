@@ -23,6 +23,10 @@ buildscript {
 }
 ```
 
+### minSDK
+
+The minSDK for the use of the library is minSDK 16
+
 Displaying a video with custom controller
 =============================
 
