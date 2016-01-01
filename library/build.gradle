@@ -7,7 +7,7 @@ def buildTime = new Date().format("yyyy-MM-dd'T'HH:mm'Z'", TimeZone.getTimeZone(
 // Manifest version information!
 int versionMajor = 0
 int versionMinor = 0
-int versionPatch = 1
+int versionPatch = 2
 int versionBuild = 1 // bump for dogfood builds, public betas, etc.
 
 buildscript {
@@ -22,7 +22,7 @@ buildscript {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         minSdkVersion 16
@@ -47,7 +47,7 @@ publish {
     userOrg = 'malmstein'
     groupId = 'com.malmstein'
     artifactId = 'fenster'
-    publishVersion = '0.0.1'
+    publishVersion = '0.0.2'
     desc = 'A library to display videos in a TextureView using a custom MediaPlayer controller'
     website = 'https://github.com/malmstein/fenster'
 }
