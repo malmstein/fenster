@@ -29,8 +29,8 @@ public class ScaleMediaPlayerActivity extends Activity {
     }
 
     private void bindViews() {
-        textureView = (FensterVideoView) findViewById(R.id.fen__play_video_texture);
-        fullScreenMediaPlayerController = (SimpleMediaFensterPlayerController) findViewById(R.id.fen__play_video_controller);
+        textureView = (FensterVideoView) findViewById(R.id.play_video_texture);
+        fullScreenMediaPlayerController = (SimpleMediaFensterPlayerController) findViewById(R.id.play_video_controller);
     }
 
     private void initVideo() {
