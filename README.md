@@ -18,7 +18,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.malmstein:fenster:0.0.1'
+        classpath 'com.malmstein:fenster:0.0.2'
     }
 }
 ```
@@ -249,11 +249,30 @@ protected void onPostCreate(Bundle savedInstanceState) {
 }
 ```
 
+
+Support for video scaling modes
+=============================
+
+Sets video scaling mode. To make the target video scaling mode effective during playback, 
+the default video scaling mode is VIDEO_SCALING_MODE_SCALE_TO_FIT. Uses [setVideoScalingMode](http://developer.android.com/intl/es/reference/android/media/MediaPlayer.html)
+
+There are two different video scaling modes: `scaleToFit` and `crop`
+
+In order to use it, `Fenster` allows you to pass in an argument from the xml layout:
+
+```xml
+<com.malmstein.fenster.view.FensterVideoView
+  android:id="@+id/play_video_texture"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  app:scaleType="crop" />
+```
+
   
 License
 -------
 
-    (c) Copyright 2014 David Gonzalez
+    (c) Copyright 2016 David Gonzalez
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
