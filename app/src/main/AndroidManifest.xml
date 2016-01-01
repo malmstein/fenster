@@ -10,6 +10,7 @@
     android:icon="@drawable/ic_launcher"
     android:label="@string/app_name"
     android:theme="@style/FensterTheme">
+
     <activity
       android:name=".MediaPlayerDemoActivity"
       android:label="@string/app_name">
@@ -19,12 +20,20 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
+
     <activity
       android:name=".SimpleMediaPlayerActivity"
       android:configChanges="orientation|keyboardHidden|screenSize"
       android:label="@string/app_name"
       android:screenOrientation="sensorLandscape"
-      android:theme="@style/FensterFullscreenTheme"></activity>
+      android:theme="@style/FensterFullscreenTheme" />
+
+    <activity
+      android:name=".ScaleMediaPlayerActivity"
+      android:configChanges="orientation|keyboardHidden|screenSize"
+      android:label="@string/app_name"
+      android:screenOrientation="sensorLandscape" />
+
     <activity
       android:name=".GestureMediaPlayerActivity"
       android:label="@string/app_name"

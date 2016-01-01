@@ -25,10 +25,10 @@ public class FensterVideoFragment extends Fragment implements FensterVideoStateL
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        contentView = inflater.inflate(R.layout.fragment_fenster_video, container);
-        textureView = (FensterVideoView) contentView.findViewById(R.id.play_video_texture);
-        fensterPlayerController = (FensterPlayerController) contentView.findViewById(R.id.play_video_controller);
-        fensterLoadingView = (FensterLoadingView) contentView.findViewById(R.id.play_video_loading);
+        contentView = inflater.inflate(R.layout.fen__fragment_fenster_video, container);
+        textureView = (FensterVideoView) contentView.findViewById(R.id.fen__play_video_texture);
+        fensterPlayerController = (FensterPlayerController) contentView.findViewById(R.id.fen__play_video_controller);
+        fensterLoadingView = (FensterLoadingView) contentView.findViewById(R.id.fen__play_video_loading);
         return contentView;
     }
 

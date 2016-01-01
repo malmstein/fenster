@@ -25,7 +25,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 23
         versionCode versionMajor * 100**3 + versionMinor * 100**2 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
@@ -40,6 +40,7 @@ android {
         abortOnError false
     }
 
+    resourcePrefix 'fen__'
 }
 
 publish {

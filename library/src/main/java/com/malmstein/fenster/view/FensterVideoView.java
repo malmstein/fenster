@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
+import android.content.res.TypedArray;
 import android.graphics.SurfaceTexture;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -51,6 +52,10 @@ public class FensterVideoView extends TextureView implements MediaController.Med
     public static final String TAG = "TextureVideoView";
     public static final int VIDEO_BEGINNING = 0;
 
+    public enum ScaleType {
+        SCALE_TO_FIT, CROP
+    }
+
     // all possible internal states
     private static final int STATE_ERROR = -1;
     private static final int STATE_IDLE = 0;
@@ -69,25 +74,24 @@ public class FensterVideoView extends TextureView implements MediaController.Med
     // calling pause() intends to bring the object to a target state
     // of STATE_PAUSED.
     private int mCurrentState = STATE_IDLE;
-
     private int mTargetState = STATE_IDLE;
-    // settable by the client
+
+    private ScaleType mScaleType;
+
     private Uri mUri;
 
     private AssetFileDescriptor mAssetFileDescriptor;
-
     private Map<String, String> mHeaders;
-    // All the stuff we need for playing and showing a video
     private SurfaceTexture mSurfaceTexture;
     private MediaPlayer mMediaPlayer = null;
-    private int mAudioSession;
     private FensterPlayerController fensterPlayerController;
     private OnCompletionListener mOnCompletionListener;
     private MediaPlayer.OnPreparedListener mOnPreparedListener;
-    private int mCurrentBufferPercentage;
     private OnErrorListener mOnErrorListener;
     private OnInfoListener mOnInfoListener;
+    private int mAudioSession;
     private int mSeekWhenPrepared;  // recording the seek position while preparing
+    private int mCurrentBufferPercentage;
     private boolean mCanPause;
     private boolean mCanSeekBack;
     private boolean mCanSeekForward;
@@ -101,8 +105,28 @@ public class FensterVideoView extends TextureView implements MediaController.Med
 
     public FensterVideoView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
+        applyCustomAttributes(context, attrs);
         videoSizeCalculator = new VideoSizeCalculator();
         initVideoView();
+    }
+
+    private void applyCustomAttributes(Context context, AttributeSet attrs) {
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.FensterVideoView);
+        if (typedArray == null) {
+            return;
+        }
+        int[] attrsValues = {R.attr.scaleType};
+        TypedArray scaleTypedArray = context.obtainStyledAttributes(attrs, attrsValues);
+        if (scaleTypedArray != null) {
+            try {
+                int scaleTypeId = typedArray.getInt(0, 0);
+                mScaleType = ScaleType.values()[scaleTypeId];
+            } finally {
+                typedArray.recycle();
+            }
+        } else {
+            mScaleType = ScaleType.SCALE_TO_FIT;
+        }
     }
 
     @Override
@@ -140,11 +164,6 @@ public class FensterVideoView extends TextureView implements MediaController.Med
         setOnInfoListener(onInfoToPlayStateListener);
     }
 
-    public void setVideoFromBeginning(final String path) {
-        disableFileDescriptor();
-        setVideo(Uri.parse(path), VIDEO_BEGINNING);
-    }
-
     private void disableFileDescriptor() {
         mAssetFileDescriptor = null;
     }
@@ -174,6 +193,22 @@ public class FensterVideoView extends TextureView implements MediaController.Med
         setVideoURI(null, null, seekInSeconds);
     }
 
+    /**
+     * Set the scale type of the video, needs to be set after setVideo() has been called
+     *
+     * @param scaleType
+     */
+    private void setScaleType(ScaleType scaleType) {
+        switch (scaleType) {
+            case SCALE_TO_FIT:
+                mMediaPlayer.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT);
+                break;
+            case CROP:
+                mMediaPlayer.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING);
+                break;
+        }
+    }
+
     private void setVideoURI(final Uri uri, final Map<String, String> headers, final int seekInSeconds) {
         Log.d(TAG, "start playing: " + uri);
         mUri = uri;
@@ -182,10 +217,6 @@ public class FensterVideoView extends TextureView implements MediaController.Med
         openVideo();
         requestLayout();
         invalidate();
-    }
-
-    public String getCurrentStream() {
-        return mUri.toString();
     }
 
     public void stopPlayback() {
@@ -224,6 +255,7 @@ public class FensterVideoView extends TextureView implements MediaController.Med
             mCurrentBufferPercentage = 0;
 
             setDataSource();
+            setScaleType(mScaleType);
 
             mMediaPlayer.setSurface(new Surface(mSurfaceTexture));
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -444,7 +476,7 @@ public class FensterVideoView extends TextureView implements MediaController.Med
     }
 
     private static int getErrorMessage(final int frameworkError) {
-        int messageId = R.string.play_error_message;
+        int messageId = R.string.fen__play_error_message;
 
         if (frameworkError == MediaPlayer.MEDIA_ERROR_IO) {
             Log.e(TAG, "TextureVideoView error. File or network related operation errors.");
@@ -460,7 +492,7 @@ public class FensterVideoView extends TextureView implements MediaController.Med
             Log.e(TAG, "TextureVideoView error. Bitstream is conforming to the related coding standard or file spec, but the media framework does not support the feature.");
         } else if (frameworkError == MediaPlayer.MEDIA_ERROR_NOT_VALID_FOR_PROGRESSIVE_PLAYBACK) {
             Log.e(TAG, "TextureVideoView error. The video is streamed and its container is not valid for progressive playback i.e the video's index (e.g moov atom) is not at the start of the file.");
-            messageId = R.string.play_progressive_error_message;
+            messageId = R.string.fen__play_progressive_error_message;
         }
         return messageId;
     }

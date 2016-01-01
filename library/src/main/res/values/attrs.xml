@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <attr name="scaleType" format="enum">
+    <enum name="scaleToFit" value="0" />
+    <enum name="crop" value="1" />
+  </attr>
+
+  <declare-styleable name="FensterVideoView">
+    <attr name="scaleType" />
+  </declare-styleable>
+
+</resources>

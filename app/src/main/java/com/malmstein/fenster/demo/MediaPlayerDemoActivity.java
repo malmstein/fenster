@@ -21,6 +21,7 @@ public class MediaPlayerDemoActivity extends Activity implements View.OnClickLis
         findViewById(R.id.start_gesture_media_player_button).setOnClickListener(this);
         findViewById(R.id.start_simple_media_player_button).setOnClickListener(this);
         findViewById(R.id.local_file_media_player_button).setOnClickListener(this);
+        findViewById(R.id.start_scale_media_player_button).setOnClickListener(this);
     }
 
     @Override
@@ -37,9 +38,9 @@ public class MediaPlayerDemoActivity extends Activity implements View.OnClickLis
                 localStream.putExtra(SimpleMediaPlayerActivity.KEY_LOCAL_FILE, true);
                 startActivity(localStream);
                 break;
-            default:
-                new Throwable("Bro I don't exist");
-
+            case R.id.start_scale_media_player_button:
+                startActivity(new Intent(this, ScaleMediaPlayerActivity.class));
+                break;
         }
     }
 

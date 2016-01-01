@@ -3,7 +3,5 @@
   android:id="@+id/play_demo_fragment"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  class="com.malmstein.fenster.play.FensterVideoFragment"
-  tools:context=".DemoFragmentActivity"
-  tools:layout="@layout/fragment_video_texture"/>
+  class="com.malmstein.fenster.play.FensterVideoFragment"/>
 

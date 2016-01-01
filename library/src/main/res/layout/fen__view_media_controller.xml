@@ -19,37 +19,37 @@
     android:id="@+id/media_controller_bottom_root"
     android:layout_alignParentBottom="true"
     android:visibility="gone"
-    android:background="@color/default_bg"
+    android:background="@color/fen__default_bg"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/padding_small"
-    android:paddingBottom="@dimen/padding_small"
-    android:paddingLeft="@dimen/padding_small"
-    android:paddingRight="@dimen/padding_extra_large"
+    android:paddingTop="@dimen/fen__padding_small"
+    android:paddingBottom="@dimen/fen__padding_small"
+    android:paddingLeft="@dimen/fen__padding_small"
+    android:paddingRight="@dimen/fen__padding_extra_large"
     android:orientation="vertical">
 
     <LinearLayout
-      android:id="@+id/media_controller_bottom_area"
+      android:id="@+id/fen__media_controller_bottom_area"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
       android:gravity="center">
 
       <TextView
-        android:id="@+id/media_controller_time_current"
+        android:id="@+id/fen__media_controller_time_current"
         style="@style/MediaText"
         android:layout_width="0dip"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
       <SeekBar
-        android:id="@+id/media_controller_progress"
+        android:id="@+id/fen__media_controller_progress"
         android:layout_width="0dip"
-        android:layout_height="@dimen/media_controller_seekbar_height"
+        android:layout_height="@dimen/fen__media_controller_seekbar_height"
         android:layout_weight="8" />
 
       <TextView
-        android:id="@+id/media_controller_time"
+        android:id="@+id/fen__media_controller_time"
         style="@style/MediaText"
         android:layout_width="0dip"
         android:layout_height="wrap_content"
@@ -58,47 +58,46 @@
     </LinearLayout>
 
     <LinearLayout
-      android:id="@+id/media_controller_controls"
+      android:id="@+id/fen__media_controller_controls"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
       android:gravity="center"
       android:orientation="horizontal">
 
       <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/ic_action_bulb"/>
+        android:background="@drawable/fen__ic_action_bulb"/>
 
       <com.malmstein.fenster.seekbar.BrightnessSeekBar
-        android:id="@+id/media_controller_brightness"
+        android:id="@+id/fen__media_controller_brightness"
         android:layout_width="0dip"
-        android:layout_height="@dimen/media_controller_seekbar_height"
+        android:layout_height="@dimen/fen__media_controller_seekbar_height"
         android:layout_weight="3" />
 
       <ImageButton
-        android:id="@+id/media_controller_previous"
+        android:id="@+id/fen__media_controller_previous"
         style="@style/MediaButton.Previous" />
 
       <ImageButton
-        android:id="@+id/media_controller_pause"
+        android:id="@+id/fen__media_controller_pause"
         style="@style/MediaButton.Play" />
 
       <ImageButton
-        android:id="@+id/media_controller_next"
+        android:id="@+id/fen__media_controller_next"
         style="@style/MediaButton.Next"
         android:contentDescription="Next" />
 
       <com.malmstein.fenster.seekbar.VolumeSeekBar
-        android:id="@+id/media_controller_volume"
+        android:id="@+id/fen__media_controller_volume"
         android:layout_width="0dip"
-        android:layout_height="@dimen/media_controller_seekbar_height"
+        android:layout_height="@dimen/fen__media_controller_seekbar_height"
         android:layout_weight="3" />
 
       <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/ic_action_music_2" />
+        android:background="@drawable/fen__ic_action_music_2" />
 
     </LinearLayout>
 

@@ -8,6 +8,7 @@
   <string name="action_about">About</string>
 
   <string name="title_simple_media_player">Simple Media Player Controller</string>
+  <string name="title_scale_media_player">Different Media Player Scale Type</string>
   <string name="title_gesture_media_player">Gesture Media Player Controller</string>
   <string name="title_local_media_player">Load file from local Raw folder using an AssetFileDescriptor</string>
 
