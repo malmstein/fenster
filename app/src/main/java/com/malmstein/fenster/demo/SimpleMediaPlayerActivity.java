@@ -29,7 +29,7 @@ public class SimpleMediaPlayerActivity extends Activity implements FensterPlayer
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        boolean localFile = getIntent().getExtras().containsKey(KEY_LOCAL_FILE);
+        boolean localFile = getIntent().hasExtra(KEY_LOCAL_FILE);
 
         if (localFile) {
             AssetFileDescriptor assetFileDescriptor = getResources().openRawResourceFd(R.raw.big_buck_bunny);
