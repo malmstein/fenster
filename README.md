@@ -1,7 +1,7 @@
 Fenster
 =============================
 
-A library to display videos in a `TextureView` using a custom `MediaPlayer` controller as described in this blog post http://www.malmstein.com/how-to-use-a-textureview-to-display-a-video-with-custom-media-player-controls/
+A library to display videos in a `TextureView` using a custom `MediaPlayer` controller as described in this blog post http://www.malmstein.com/blog/2014/08/09/how-to-use-a-textureview-to-display-a-video-with-custom-media-player-controls/
 
 ![Demo gif](https://raw.githubusercontent.com/malmstein/Fenster/master/art/video_example.gif)
 
