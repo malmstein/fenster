@@ -16,4 +16,8 @@ public interface FensterPlayerController {
 
     void setVisibilityListener(FensterPlayerControllerVisibilityListener visibilityListener);
 
+    boolean isShowing();
+
+    boolean isFirstTimeLoading();
+
 }

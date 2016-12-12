@@ -1,6 +1,9 @@
 package com.malmstein.fenster.controller;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -171,6 +174,7 @@ public final class SimpleMediaFensterPlayerController extends FrameLayout implem
 
     }
 
+    @Override
     public boolean isShowing() {
         return mShowing;
     }
@@ -179,6 +183,7 @@ public final class SimpleMediaFensterPlayerController extends FrameLayout implem
         return mLoading;
     }
 
+    @Override
     public boolean isFirstTimeLoading() {
         return mFirstTimeLoading;
     }
@@ -201,6 +206,28 @@ public final class SimpleMediaFensterPlayerController extends FrameLayout implem
         if (visibilityListener != null) {
             visibilityListener.onControlsVisibilityChange(false);
         }
+    }
+
+    /**
+     * hides the next/prev buttons
+     */
+    public void disableNavigationButtons() {
+        mNextButton.setVisibility(View.GONE);
+        mPrevButton.setVisibility(View.GONE);
+    }
+
+    /**
+     *  set a custom color for the progress view
+     *  works for android >= 21 only
+     */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void setSeekbarColor(ColorStateList color) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+            return;
+
+        SeekBar seekbar = (SeekBar) mProgress;
+        seekbar.setThumbTintList(color);
+        seekbar.setProgressTintList(color);
     }
 
     private String stringForTime(final int timeMs) {
@@ -484,5 +511,4 @@ public final class SimpleMediaFensterPlayerController extends FrameLayout implem
             show();
         }
     }
-
 }
