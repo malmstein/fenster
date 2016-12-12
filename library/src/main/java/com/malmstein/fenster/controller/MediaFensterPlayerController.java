@@ -264,10 +264,12 @@ public final class MediaFensterPlayerController extends RelativeLayout implement
         bottomControlsArea.setVisibility(View.VISIBLE);
     }
 
+    @Override
     public boolean isShowing() {
         return mShowing;
     }
 
+    @Override
     public boolean isFirstTimeLoading() {
         return mFirstTimeLoading;
     }

@@ -174,6 +174,7 @@ public final class SimpleMediaFensterPlayerController extends FrameLayout implem
 
     }
 
+    @Override
     public boolean isShowing() {
         return mShowing;
     }
@@ -182,6 +183,7 @@ public final class SimpleMediaFensterPlayerController extends FrameLayout implem
         return mLoading;
     }
 
+    @Override
     public boolean isFirstTimeLoading() {
         return mFirstTimeLoading;
     }
