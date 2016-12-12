@@ -23,22 +23,20 @@
       <TextView
         android:id="@+id/fen__media_controller_time_current"
         style="@style/MediaText"
-        android:layout_width="0dip"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
       <SeekBar
         android:id="@+id/fen__media_controller_progress"
         android:layout_width="0dip"
         android:layout_height="@dimen/fen__media_controller_seekbar_height"
-        android:layout_weight="8" />
+        android:layout_weight="1" />
 
       <TextView
         android:id="@+id/fen__media_controller_time"
         style="@style/MediaText"
-        android:layout_width="0dip"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     </LinearLayout>
 
