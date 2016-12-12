@@ -511,9 +511,4 @@ public final class SimpleMediaFensterPlayerController extends FrameLayout implem
             show();
         }
     }
-
-    public interface IThemer {
-        void onThemeSeekbar(SeekBar seekbar);
-    }
-
 }
